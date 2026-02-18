@@ -5,18 +5,55 @@ class Ingredient(
     var name: String, var price: Int, val id: UUID = UUID.randomUUID()
 )
 
-fun printIngredients(ingredients: List<Ingredient>) {
-    ingredients.forEach { ingredient ->
-        println("Название ${ingredient.name}, цена - ${ingredient.price}")
-    }
-}
-
 fun chooseIngredient(ingredients: List<Ingredient>): UUID {
     println("Выберите номер элемента")
     ingredients.forEachIndexed { index, ingredient ->
         println("$index - Название: ${ingredient.name}, цена - ${ingredient.price}")
     }
     return ingredients[readln().toInt()].id
+}
+
+fun addIngredient(ingredients: MutableList<Ingredient>) {
+    println("Введите название ингредиента")
+    val name = readln()
+    println("Введите цену ингредиента")
+    val price = readln().toInt()
+
+    ingredients.add(Ingredient(name, price))
+}
+
+fun printIngredients(ingredients: List<Ingredient>) {
+    ingredients.forEach { ingredient ->
+        println("Название ${ingredient.name}, цена - ${ingredient.price}")
+    }
+}
+
+fun editIngredient(ingredients: List<Ingredient>) {
+    val idIngredient = chooseIngredient(ingredients)
+    val ingredient = ingredients.find { it.id == idIngredient }
+
+    println("Введите новое название (enter = не менять)")
+    val newName = readln()
+    if (newName != "") ingredient?.name = newName
+
+    println("Введите новую цену (enter = не менять)")
+    val newPrice = readln()
+    if (newPrice != "") ingredient?.price = newPrice.toInt()
+}
+
+fun deleteIngredient(ingredients: MutableList<Ingredient>, pizzas: List<Pizza>) {
+    val idIngredient = chooseIngredient(ingredients)
+    var used = false
+    pizzas.forEach { pizza ->
+        if (pizza.ingredientsIds.any { it == idIngredient }) {
+            used = true
+        }
+    }
+    if (used) {
+        println("Нельзя удалить ингридиент, который используется в какой то пицце")
+        return
+    }
+    ingredients.removeIf { it.id == idIngredient }
 }
 
 fun ingredientsMenu(ingredients: MutableList<Ingredient>, pizzas: List<Pizza>) {
@@ -32,37 +69,13 @@ fun ingredientsMenu(ingredients: MutableList<Ingredient>, pizzas: List<Pizza>) {
         if (userOutput == 0) {
             break
         } else if (userOutput == 1) {
-            println("Введите название ингридиента")
-            val ingredientName = readln()
-            println("Введите цену ингридиента")
-            val ingredientPrice = readln().toInt()
-            ingredients.add(Ingredient(name = ingredientName, price = ingredientPrice))
+            addIngredient(ingredients)
         } else if (userOutput == 2) {
             printIngredients(ingredients)
         } else if (userOutput == 3) {
-            val idIngredient = chooseIngredient(ingredients)
-            val ingredient = ingredients.find { it.id == idIngredient }
-
-            println("Введите новое название (enter = не менять)")
-            val newName = readln()
-            if (newName != "") ingredient?.name = newName
-
-            println("Введите новую цену (enter = не менять)")
-            val newPrice = readln()
-            if (newPrice != "") ingredient?.price = newPrice.toInt()
+            editIngredient(ingredients)
         } else if (userOutput == 4) {
-            val idIngredient = chooseIngredient(ingredients)
-            var used = false
-            pizzas.forEach { pizza ->
-                if (pizza.ingredientsIds.any { it == idIngredient }) {
-                    used = true
-                }
-            }
-            if (used) {
-                println("Нельзя удаолить ингридиент, который используется в какой то пицце")
-                continue
-            }
-            ingredients.removeIf { it.id == idIngredient }
+            deleteIngredient(ingredients, pizzas)
         }
 
         line()
