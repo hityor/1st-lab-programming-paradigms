@@ -1,8 +1,31 @@
 import java.util.UUID
 
 class Base(
-    var name: String, var price: Int, val isClassic: Boolean, val id: UUID = UUID.randomUUID()
-)
+    name: String,
+    price: Int,
+    val isClassic: Boolean,
+    val id: UUID = UUID.randomUUID()
+) {
+    var name: String = name
+        private set
+
+    var price: Int = price
+        private set
+
+    fun changeName(newName: String) {
+        if (newName.isNotBlank())
+            name = newName
+    }
+
+    fun changePrice(newPrice: Int, classicBasePrice: Int) {
+        if (!isClassic) {
+            require(newPrice <= classicBasePrice * 1.2) {
+                "Цена превышает предел: максимум +20% от стоимости классической основы"
+            }
+            price = newPrice
+        }
+    }
+}
 
 fun printBases(bases: List<Base>) {
     bases.forEach { base ->
@@ -57,17 +80,17 @@ fun editBase(bases: MutableList<Base>) {
 
     println("Введите новое название (enter = не менять)")
     val newName = readln()
-    if (newName != "") base.name = newName
+    if (newName != "") base.changeName(newName)
+
+    if (base.isClassic) {
+        println("Менять цену классической пиццы нельзя")
+        return
+    }
 
     println("Введите новую цену (enter = не менять)")
     val newPrice = readln()
     if (newPrice != "") {
-        if (!base.isClassic) {
-            if (newPrice.toInt() <= classicBasePrice * 1.2) base.price = newPrice.toInt()
-            else println("Цена более чем на 20 процентов выше цены классической основы")
-        } else {
-            base.price = newPrice.toInt()
-        }
+
     }
 }
 

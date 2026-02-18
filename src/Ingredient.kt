@@ -2,8 +2,25 @@ import java.util.UUID
 import kotlin.collections.forEach
 
 class Ingredient(
-    var name: String, var price: Int, val id: UUID = UUID.randomUUID()
-)
+    name: String,
+    price: Int,
+    val id: UUID = UUID.randomUUID()
+) {
+    var name: String = name
+        private set
+
+    var price: Int = price
+        private set
+
+    fun changeName(newName: String) {
+        if (newName.isNotBlank())
+            name = newName
+    }
+
+    fun changePrice(newPrice: Int) {
+        price = newPrice
+    }
+}
 
 fun chooseIngredient(ingredients: List<Ingredient>): UUID {
     println("Выберите номер элемента")
@@ -34,11 +51,11 @@ fun editIngredient(ingredients: List<Ingredient>) {
 
     println("Введите новое название (enter = не менять)")
     val newName = readln()
-    if (newName != "") ingredient?.name = newName
+    if (newName != "") ingredient?.changeName(newName)
 
     println("Введите новую цену (enter = не менять)")
     val newPrice = readln()
-    if (newPrice != "") ingredient?.price = newPrice.toInt()
+    if (newPrice != "") ingredient?.changePrice(newPrice.toInt())
 }
 
 fun deleteIngredient(ingredients: MutableList<Ingredient>, pizzas: List<Pizza>) {
