@@ -2,6 +2,43 @@ fun line() {
     println("---------------------------------------------------------------------------------------------------------")
 }
 
+fun readNonBlank(prompt: String): String {
+    while (true) {
+        println(prompt)
+        val s = readln()
+        if (s.isNotBlank()) return s.trim()
+        println("Пустое значение. Попробуйте ещё раз.")
+    }
+}
+
+fun readPositiveInt(prompt: String): Int {
+    while (true) {
+        println(prompt)
+        val n = readln().toIntOrNull()
+        if (n != null && n > 0) return n
+        println("Введите целое число > 0.")
+    }
+}
+
+fun readOptionalNonBlank(prompt: String): String? {
+    while (true) {
+        println(prompt)
+        val s = readln()
+        if (s.isEmpty()) return null
+        if (s.isNotBlank()) return s.trim()
+        println("Значение не может состоять из пробелов")
+    }
+}
+
+fun readOptionalPositiveInt(prompt: String): Int? {
+    while (true) {
+        println(prompt)
+        val n = readln().toIntOrNull() ?: return null
+        if (n > 0) return n
+        println("Введите целое число > 0.")
+    }
+}
+
 fun main() {
     val ingredients = mutableListOf<Ingredient>(
         Ingredient(name = "Моцарелла", price = 115),

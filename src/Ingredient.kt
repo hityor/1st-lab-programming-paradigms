@@ -13,11 +13,12 @@ class Ingredient(
         private set
 
     fun changeName(newName: String) {
-        if (newName.isNotBlank())
-            name = newName
+        require(newName.isNotBlank()) { "Название не может быть пустым" }
+        name = newName.trim()
     }
 
     fun changePrice(newPrice: Int) {
+        require(newPrice > 0) { "Цена должна быть > 0" }
         price = newPrice
     }
 }
@@ -31,10 +32,9 @@ fun chooseIngredient(ingredients: List<Ingredient>): UUID {
 }
 
 fun addIngredient(ingredients: MutableList<Ingredient>) {
-    println("Введите название ингредиента")
-    val name = readln()
-    println("Введите цену ингредиента")
-    val price = readln().toInt()
+    val name = readNonBlank("Введите название ингредиента")
+
+    val price = readPositiveInt("Введите цену ингредиента")
 
     ingredients.add(Ingredient(name, price))
 }
@@ -49,13 +49,11 @@ fun editIngredient(ingredients: List<Ingredient>) {
     val idIngredient = chooseIngredient(ingredients)
     val ingredient = ingredients.find { it.id == idIngredient }
 
-    println("Введите новое название (enter = не менять)")
-    val newName = readln()
-    if (newName != "") ingredient?.changeName(newName)
+    val newName = readOptionalNonBlank("Введите новое название (enter = не менять)")
+    if (newName != null) ingredient?.changeName(newName)
 
-    println("Введите новую цену (enter = не менять)")
-    val newPrice = readln()
-    if (newPrice != "") ingredient?.changePrice(newPrice.toInt())
+    val newPrice = readOptionalNonBlank("Введите новую цену (enter = не менять)")
+    if (newPrice != null) ingredient?.changePrice(newPrice.toInt())
 }
 
 fun deleteIngredient(ingredients: MutableList<Ingredient>, pizzas: List<Pizza>) {

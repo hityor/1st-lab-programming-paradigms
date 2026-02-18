@@ -13,8 +13,8 @@ class Base(
         private set
 
     fun changeName(newName: String) {
-        if (newName.isNotBlank())
-            name = newName
+        require(newName.isNotBlank()) { "Название не может быть пустым" }
+        name = newName.trim()
     }
 
     fun changePrice(newPrice: Int, classicBasePrice: Int) {
@@ -22,7 +22,10 @@ class Base(
             require(newPrice <= classicBasePrice * 1.2) {
                 "Цена превышает предел: максимум +20% от стоимости классической основы"
             }
+            require(newPrice > 0) { "Цена должны быть > 0" }
             price = newPrice
+        } else {
+            println()
         }
     }
 }
@@ -43,11 +46,9 @@ fun chooseBase(bases: MutableList<Base>): Base {
 }
 
 fun addBase(bases: MutableList<Base>) {
-    println("Введите название основы")
-    val baseName = readln()
+    val baseName = readNonBlank("Введите название основы")
 
-    println("Введите цену")
-    val basePrice = readln().toInt()
+    val basePrice = readPositiveInt("Введите цену")
 
     val classicBasePrice = bases.find { it.isClassic }?.price
     if (classicBasePrice != null) {
@@ -78,19 +79,18 @@ fun editBase(bases: MutableList<Base>) {
         return
     }
 
-    println("Введите новое название (enter = не менять)")
-    val newName = readln()
-    if (newName != "") base.changeName(newName)
+    val newName = readOptionalNonBlank("Введите новое название (enter = не менять)")
+    if (newName != null) base.changeName(newName)
 
     if (base.isClassic) {
         println("Менять цену классической пиццы нельзя")
         return
     }
 
-    println("Введите новую цену (enter = не менять)")
-    val newPrice = readln()
-    if (newPrice != "") {
-
+    println()
+    val newPrice = readOptionalPositiveInt("Введите новую цену (enter = не менять)")
+    if (newPrice != null) {
+       base.changePrice(newPrice, classicBasePrice)
     }
 }
 

@@ -69,8 +69,7 @@ fun addPizza(pizzas: MutableList<Pizza>, bases: List<Base>, ingredients: List<In
         return
     }
 
-    println("Введите название пиццы")
-    val pizzaName = readln()
+    val pizzaName = readNonBlank("Введите название пиццы")
 
     println("Выберите номер основы")
     bases.forEachIndexed { index, base ->
