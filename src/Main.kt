@@ -23,16 +23,12 @@ fun main() {
             name = "Пепперони",
             baseId = bases[0].id,
             ingredientsIds = mutableListOf(ingredients[0].id, ingredients[4].id)
-        ),
-        Pizza(
+        ), Pizza(
             name = "какая та",
             baseId = bases[1].id,
             ingredientsIds = mutableListOf(ingredients[4].id, ingredients[5].id)
-        ),
-        Pizza(
-            name = "еще какая та",
-            baseId = bases[0].id,
-            ingredientsIds = mutableListOf(ingredients[5].id)
+        ), Pizza(
+            name = "еще какая та", baseId = bases[0].id, ingredientsIds = mutableListOf(ingredients[5].id)
         )
     )
 
