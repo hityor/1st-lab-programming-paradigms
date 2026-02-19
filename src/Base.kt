@@ -18,15 +18,12 @@ class Base(
     }
 
     fun changePrice(newPrice: Int, classicBasePrice: Int) {
-        if (!isClassic) {
-            require(newPrice <= classicBasePrice * 1.2) {
-                "Цена превышает предел: максимум +20% от стоимости классической основы"
-            }
-            require(newPrice > 0) { "Цена должны быть > 0" }
-            price = newPrice
-        } else {
-            println()
+        require(!isClassic) { "Нельзя менять цену классической основы" }
+        require(newPrice > 0) { "Цена должна быть > 0" }
+        require(newPrice <= (classicBasePrice * 1.2).toInt()) {
+            "Цена превышает предел: максимум +20% от классической"
         }
+        price = newPrice
     }
 }
 
@@ -37,12 +34,12 @@ fun printBases(bases: List<Base>) {
 }
 
 fun chooseBase(bases: MutableList<Base>): Base {
-    println("Введите номер элемента")
     bases.forEachIndexed { index, base ->
         println("$index - Название: ${base.name}, цена: ${base.price}, классическая: ${base.isClassic}")
     }
 
-    return bases[readln().toInt()]
+    val idx = readIndex("Введите номер элемента", bases.size)
+    return bases[idx]
 }
 
 fun addBase(bases: MutableList<Base>) {
@@ -60,9 +57,8 @@ fun addBase(bases: MutableList<Base>) {
         }
     } else {
         println("Вы хотите, чтобы эта основа была классической. Если нет, то создать основу нельзя будет")
-        println("0 - хотите, 1 - не хотите")
 
-        if (readln().toInt() == 0) {
+        if (readIndex("0 - хотите, 1 - не хотите", 2) == 0) {
             bases.add(Base(name = baseName, price = basePrice, isClassic = true))
         } else {
             println("Неклассическую основу нельзя создать, не создав классическую")
@@ -114,7 +110,7 @@ fun basesMenu(bases: MutableList<Base>, pizzas: List<Pizza>) {
         println("3 - Редактировать основу")
         println("4 - Удалить основу")
 
-        val userOutput = readln().toInt()
+        val userOutput = readIndex("Выберите номер (0...4)", 5)
 
         if (userOutput == 0) {
             break

@@ -1,5 +1,4 @@
 import java.util.UUID
-import kotlin.collections.forEach
 
 class Ingredient(
     name: String,
@@ -24,11 +23,12 @@ class Ingredient(
 }
 
 fun chooseIngredient(ingredients: List<Ingredient>): UUID {
-    println("Выберите номер элемента")
     ingredients.forEachIndexed { index, ingredient ->
         println("$index - Название: ${ingredient.name}, цена - ${ingredient.price}")
     }
-    return ingredients[readln().toInt()].id
+
+    val idx = readIndex("Выберите номер элемента", ingredients.size)
+    return ingredients[idx].id
 }
 
 fun addIngredient(ingredients: MutableList<Ingredient>) {
@@ -52,8 +52,8 @@ fun editIngredient(ingredients: List<Ingredient>) {
     val newName = readOptionalNonBlank("Введите новое название (enter = не менять)")
     if (newName != null) ingredient?.changeName(newName)
 
-    val newPrice = readOptionalNonBlank("Введите новую цену (enter = не менять)")
-    if (newPrice != null) ingredient?.changePrice(newPrice.toInt())
+    val newPrice = readOptionalPositiveInt("Введите новую цену (enter = не менять)")
+    if (newPrice != null) ingredient?.changePrice(newPrice)
 }
 
 fun deleteIngredient(ingredients: MutableList<Ingredient>, pizzas: List<Pizza>) {
@@ -79,7 +79,7 @@ fun ingredientsMenu(ingredients: MutableList<Ingredient>, pizzas: List<Pizza>) {
         println("3 - Редактировать ингридиент")
         println("4 - Удалить ингридиент")
 
-        val userOutput = readln().toInt()
+        val userOutput = readIndex("Выберите номер (0...4)", 5)
 
         if (userOutput == 0) {
             break
