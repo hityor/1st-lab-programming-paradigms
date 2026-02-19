@@ -1,26 +1,12 @@
-import java.util.UUID
+package ui
 
-class Ingredient(
-    name: String,
-    price: Int,
-    val id: UUID = UUID.randomUUID()
-) {
-    var name: String = name
-        private set
+import domain.Ingredient
+import domain.Pizza
+import utils.*
 
-    var price: Int = price
-        private set
 
-    fun changeName(newName: String) {
-        require(newName.isNotBlank()) { "Название не может быть пустым" }
-        name = newName.trim()
-    }
+import java.util.*
 
-    fun changePrice(newPrice: Int) {
-        require(newPrice > 0) { "Цена должна быть > 0" }
-        price = newPrice
-    }
-}
 
 fun chooseIngredient(ingredients: List<Ingredient>): UUID {
     ingredients.forEachIndexed { index, ingredient ->
