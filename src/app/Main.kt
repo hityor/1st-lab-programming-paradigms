@@ -5,6 +5,7 @@ import domain.Ingredient
 import domain.Pizza
 import domain.DataStorage
 import ui.basesMenu
+import ui.bordersMenu
 import ui.ingredientsMenu
 import ui.pizzaMenu
 import utils.readIndex
@@ -42,21 +43,24 @@ fun main() {
     val storage = DataStorage(
         ingredients = ingredients,
         bases = bases,
-        pizzas = pizzas
+        pizzas = pizzas,
+        borders = mutableListOf()
     )
 
     while (true) {
         println("0 - Выйти из программы")
         println("1 - Ингридиенты")
-        println("2 - Основа")
-        println("3 - Пицца")
+        println("2 - Основы")
+        println("3 - Бортики")
+        println("4 - Пиццы")
 
-        val output = readIndex("Выберите номер (0...3)", 4)
+        val output = readIndex("Выберите номер (0...4)", 5)
         when (output) {
             0 -> break
             1 -> ingredientsMenu(storage)
             2 -> basesMenu(storage)
-            3 -> pizzaMenu(storage)
+            3 -> bordersMenu(storage)
+            4 -> pizzaMenu(storage)
         }
     }
 }

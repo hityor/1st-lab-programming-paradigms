@@ -14,7 +14,7 @@ fun chooseIngredients(ingredients: List<Ingredient>): List<UUID> {
     val chosen = mutableListOf<UUID>()
 
     while (true) {
-        println("Выберите ингредиент: 0..${ingredients.size - 1}, или -1 чтобы закончить")
+        println("Выберите ингредиент: 0...${ingredients.size - 1}, или -1 чтобы закончить")
         ingredients.forEachIndexed { index, ingredient ->
             println("$index - ${ingredient.name}, цена: ${ingredient.price}")
         }
@@ -22,14 +22,14 @@ fun chooseIngredients(ingredients: List<Ingredient>): List<UUID> {
         val n = readInt("Номер:")
         if (n == -1) break
 
-        if (n !in 0 until ingredients.size) {
-            println("Неверный номер.")
+        if (n !in 0..<ingredients.size) {
+            println("Неверный номер")
             continue
         }
 
         val id = ingredients[n].id
         if (id in chosen) {
-            println("Этот ингредиент уже выбран.")
+            println("Этот ингредиент уже выбран")
         } else {
             chosen.add(id)
         }
@@ -52,7 +52,6 @@ fun addPizza(pizzas: MutableList<Pizza>, ingredients: List<Ingredient>, bases: L
 
     val pizzaName = readNonBlank("Введите название пиццы")
 
-    println("Выберите номер основы")
     bases.forEachIndexed { index, base ->
         println("$index - ${base.name}")
     }
@@ -65,7 +64,6 @@ fun addPizza(pizzas: MutableList<Pizza>, ingredients: List<Ingredient>, bases: L
 }
 
 fun deletePizza(pizzas: MutableList<Pizza>) {
-    println()
     pizzas.forEachIndexed { index, pizza ->
         println("$index - ${pizza.name}")
     }
@@ -85,7 +83,6 @@ fun editPizza(pizzas: MutableList<Pizza>, ingredients: List<Ingredient>, bases: 
     val pizza = pizzas[pizzaIdx]
 
     println("${pizza.name} - название пиццы")
-    println()
     val newName = readOptionalNonBlank("Введите новое название пиццы (enter = не менять название)")
     if (newName != null) pizza.changeName(newName)
 
@@ -103,7 +100,6 @@ fun editPizza(pizzas: MutableList<Pizza>, ingredients: List<Ingredient>, bases: 
     pizza.ingredientsIds.forEachIndexed { index, ingredientId ->
         println("$index - ${ingredients.find { it.id == ingredientId }?.name}")
     }
-    println()
     val changeIngredients = readIndex("0 - не менять ингредиенты, 1 - пересобрать ингредиенты", 2)
     if (changeIngredients == 1) {
         val newIngredientsIds = chooseIngredients(ingredients)
