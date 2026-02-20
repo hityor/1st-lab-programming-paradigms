@@ -2,6 +2,7 @@ package ui
 
 import domain.Ingredient
 import domain.Pizza
+import domain.DataStorage
 import utils.*
 
 
@@ -57,7 +58,7 @@ fun deleteIngredient(ingredients: MutableList<Ingredient>, pizzas: List<Pizza>) 
     ingredients.removeIf { it.id == idIngredient }
 }
 
-fun ingredientsMenu(ingredients: MutableList<Ingredient>, pizzas: List<Pizza>) {
+fun ingredientsMenu(dataStorage: DataStorage) {
     while (true) {
         println("0 - Выйти из меню")
         println("1 - Создать ингридиент")
@@ -67,16 +68,12 @@ fun ingredientsMenu(ingredients: MutableList<Ingredient>, pizzas: List<Pizza>) {
 
         val userOutput = readIndex("Выберите номер (0...4)", 5)
 
-        if (userOutput == 0) {
-            break
-        } else if (userOutput == 1) {
-            addIngredient(ingredients)
-        } else if (userOutput == 2) {
-            printIngredients(ingredients)
-        } else if (userOutput == 3) {
-            editIngredient(ingredients)
-        } else if (userOutput == 4) {
-            deleteIngredient(ingredients, pizzas)
+        when (userOutput) {
+            0 -> break
+            1 -> addIngredient(dataStorage.ingredients)
+            2 -> printIngredients(dataStorage.ingredients)
+            3 -> editIngredient(dataStorage.ingredients)
+            4 -> deleteIngredient(dataStorage.ingredients, dataStorage.pizzas)
         }
 
         line()

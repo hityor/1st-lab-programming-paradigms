@@ -3,6 +3,7 @@ package app
 import domain.Base
 import domain.Ingredient
 import domain.Pizza
+import domain.DataStorage
 import ui.basesMenu
 import ui.ingredientsMenu
 import ui.pizzaMenu
@@ -38,6 +39,12 @@ fun main() {
         )
     )
 
+    val storage = DataStorage(
+        ingredients = ingredients,
+        bases = bases,
+        pizzas = pizzas
+    )
+
     while (true) {
         println("0 - Выйти из программы")
         println("1 - Ингридиенты")
@@ -45,14 +52,11 @@ fun main() {
         println("3 - Пицца")
 
         val output = readIndex("Выберите номер (0...3)", 4)
-        if (output == 0) {
-            break
-        } else if (output == 1) {
-            ingredientsMenu(ingredients, pizzas)
-        } else if (output == 2) {
-            basesMenu(bases, pizzas)
-        } else if (output == 3) {
-            pizzaMenu(pizzas, ingredients, bases)
+        when (output) {
+            0 -> break
+            1 -> ingredientsMenu(storage)
+            2 -> basesMenu(storage)
+            3 -> pizzaMenu(storage)
         }
     }
 }

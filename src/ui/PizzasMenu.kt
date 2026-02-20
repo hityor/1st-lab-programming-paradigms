@@ -1,10 +1,14 @@
 package ui
 
 import domain.Base
+import domain.DataStorage
 import domain.Ingredient
 import domain.Pizza
-import utils.*
-import java.util.UUID
+import utils.readIndex
+import utils.readInt
+import utils.readNonBlank
+import utils.readOptionalNonBlank
+import java.util.*
 
 fun chooseIngredients(ingredients: List<Ingredient>): List<UUID> {
     val chosen = mutableListOf<UUID>()
@@ -34,7 +38,13 @@ fun chooseIngredients(ingredients: List<Ingredient>): List<UUID> {
     return chosen
 }
 
-fun addPizza(pizzas: MutableList<Pizza>, bases: List<Base>, ingredients: List<Ingredient>) {
+fun printPizzas(pizzas: List<Pizza>, ingredients: List<Ingredient>, bases: List<Base>) {
+    pizzas.forEach { pizza ->
+        pizza.printInfo(ingredients, bases)
+    }
+}
+
+fun addPizza(pizzas: MutableList<Pizza>, ingredients: List<Ingredient>, bases: List<Base>) {
     if (bases.isEmpty()) {
         println("Основ нет, пиццу создать нельзя")
         return
@@ -113,7 +123,7 @@ fun filterPizzasByIngredient(pizzas: List<Pizza>, ingredients: List<Ingredient>)
     return filteredPizzas
 }
 
-fun pizzaMenu(pizzas: MutableList<Pizza>, ingredients: MutableList<Ingredient>, bases: List<Base>) {
+fun pizzaMenu(dataStorage: DataStorage) {
     while (true) {
         println("0 - Выйти из меню")
         println("1 - Вывести список пицц")
@@ -124,25 +134,18 @@ fun pizzaMenu(pizzas: MutableList<Pizza>, ingredients: MutableList<Ingredient>, 
 
         val userChoice = readIndex("Выберите номер (0...5)", 6)
 
-        if (userChoice == 0) {
-            break
-        } else if (userChoice == 1) {
-            pizzas.forEach { pizza ->
-                pizza.printInfo(ingredients, bases)
-            }
-        } else if (userChoice == 2) {
-            addPizza(pizzas, bases, ingredients)
-        } else if (userChoice == 3) {
-            deletePizza(pizzas)
-        } else if (userChoice == 4) {
-            editPizza(pizzas, ingredients, bases)
-        } else if (userChoice == 5) {
-            val filteredPizzas = filterPizzasByIngredient(pizzas, ingredients)
-            filteredPizzas.forEach { pizza ->
-                pizza.printInfo(ingredients, bases)
+        when (userChoice) {
+            0 -> break
+            1 -> printPizzas(dataStorage.pizzas, dataStorage.ingredients, dataStorage.bases)
+            2 -> addPizza(dataStorage.pizzas, dataStorage.ingredients, dataStorage.bases)
+            3 -> deletePizza(dataStorage.pizzas)
+            4 -> editPizza(dataStorage.pizzas, dataStorage.ingredients, dataStorage.bases)
+            5 -> {
+                val filteredPizzas = filterPizzasByIngredient(dataStorage.pizzas, dataStorage.ingredients)
+                filteredPizzas.forEach { pizza ->
+                    pizza.printInfo(dataStorage.ingredients, dataStorage.bases)
+                }
             }
         }
-
-        line()
     }
 }

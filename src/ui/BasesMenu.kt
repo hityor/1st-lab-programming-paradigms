@@ -1,6 +1,7 @@
 package ui
 
 import domain.Base
+import domain.DataStorage
 import domain.Pizza
 import utils.*
 
@@ -73,13 +74,11 @@ fun deleteBase(bases: MutableList<Base>, pizzas: List<Pizza>) {
         println("Нельзя удалить основу, которая используется в какой то пицце")
         return
     }
-    if (baseToDelete.isClassic && bases.any { !it.isClassic })
-        println("Удалять классическую основу нельзя, если уже есть неклассическая")
-    else
-        bases.removeIf { it.id == baseToDelete.id }
+    if (baseToDelete.isClassic && bases.any { !it.isClassic }) println("Удалять классическую основу нельзя, если уже есть неклассическая")
+    else bases.removeIf { it.id == baseToDelete.id }
 }
 
-fun basesMenu(bases: MutableList<Base>, pizzas: List<Pizza>) {
+fun basesMenu(dataStorage: DataStorage) {
     while (true) {
         println("0 - Выйти из меню")
         println("1 - Вывести список основ")
@@ -89,16 +88,12 @@ fun basesMenu(bases: MutableList<Base>, pizzas: List<Pizza>) {
 
         val userOutput = readIndex("Выберите номер (0...4)", 5)
 
-        if (userOutput == 0) {
-            break
-        } else if (userOutput == 1) {
-            printBases(bases)
-        } else if (userOutput == 2) {
-            addBase(bases)
-        } else if (userOutput == 3) {
-            editBase(bases)
-        } else if (userOutput == 4) {
-            deleteBase(bases, pizzas)
+        when (userOutput) {
+            0 -> break
+            1 -> printBases(dataStorage.bases)
+            2 -> addBase(dataStorage.bases)
+            3 -> editBase(dataStorage.bases)
+            4 -> deleteBase(dataStorage.bases, dataStorage.pizzas)
         }
 
         line()
