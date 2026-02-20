@@ -1,6 +1,6 @@
 package domain
 
-import java.util.UUID
+import java.util.*
 
 class Pizza(
     name: String,
@@ -30,10 +30,10 @@ class Pizza(
     fun calcPrice(ingredients: List<Ingredient>, bases: List<Base>): Int {
         var price = 0;
 
-        price += bases.find { it.id == baseId }?.price ?: 0
+        price += bases.find { it.id == baseId }?.price ?: error("Основа не найдена для пиццы $name")
 
         ingredientsIds.forEach { ingredientId ->
-            price += ingredients.find { it.id == ingredientId }?.price ?: 0
+            price += ingredients.find { it.id == ingredientId }?.price ?: error("Ингредиент не найден для пиццы $name")
         }
         return price
     }
