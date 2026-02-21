@@ -17,6 +17,7 @@ class Border(
     val forbiddenPizzaIds: List<UUID> get() = forbiddenPizzaIdsMutable.toList()
 
     fun changeName(newName: String) {
+        require(newName.isNotBlank()) { "Название не может быть пустым" }
         name = newName.trim()
     }
 
@@ -36,7 +37,7 @@ class Border(
 
         println("Пиццы, с которыми запрещено использовать этот бортик:")
         forbiddenPizzaIds.forEach { frbdnId ->
-            println(pizzas.find {it.id == frbdnId}?.name)
+            println(pizzas.find { it.id == frbdnId }?.name)
         }
 
         println("Цена бортика: ${calcPrice(ingredients)}")
@@ -47,7 +48,13 @@ class Border(
             ingredients.find { it.id == ingredientId }?.price ?: error("Ингридиент бортика $name не найден")
         }
 
-    fun forbidPizza(pizzaId: UUID) { forbiddenPizzaIdsMutable.add(pizzaId) }
-    fun allowPizza(pizzaId: UUID) { forbiddenPizzaIdsMutable.remove(pizzaId) }
-    fun isAllowedFor(pizzaId: UUID): Boolean =  !forbiddenPizzaIdsMutable.contains(pizzaId)
+    fun forbidPizza(pizzaId: UUID) {
+        forbiddenPizzaIdsMutable.add(pizzaId)
+    }
+
+    fun allowPizza(pizzaId: UUID) {
+        forbiddenPizzaIdsMutable.remove(pizzaId)
+    }
+
+    fun isAllowedFor(pizzaId: UUID): Boolean = pizzaId !in forbiddenPizzaIdsMutable
 }

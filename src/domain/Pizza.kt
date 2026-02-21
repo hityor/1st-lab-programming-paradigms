@@ -20,6 +20,7 @@ class Pizza(
         get() = ingredientsIdsMutable.toList()
 
     fun changeName(newName: String) {
+        require(newName.isNotBlank()) { "Название не может быть пустым" }
         name = newName
     }
 
