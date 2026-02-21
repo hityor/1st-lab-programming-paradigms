@@ -4,7 +4,7 @@ import java.util.UUID
 
 class OrderItem(
     val pizzaId: UUID,
-    val pizzasSize: PizzaSize,
+    val pizzaSize: PizzaSize,
     val doubleIngredients: Boolean,
     val borderId: UUID? = null
 ) {
@@ -30,6 +30,6 @@ class OrderItem(
             price += border.calcPrice(storage.ingredients)
         }
 
-        return (price * pizzasSize.multiplier).toInt()
+        return (price * pizzaSize.multiplier).toInt()
     }
 }

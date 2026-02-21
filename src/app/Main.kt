@@ -7,6 +7,7 @@ import domain.DataStorage
 import ui.basesMenu
 import ui.bordersMenu
 import ui.ingredientsMenu
+import ui.ordersMenu
 import ui.pizzaMenu
 import utils.readIndex
 
@@ -44,7 +45,8 @@ fun main() {
         ingredients = ingredients,
         bases = bases,
         pizzas = pizzas,
-        borders = mutableListOf()
+        borders = mutableListOf(),
+        orders = mutableListOf()
     )
 
     while (true) {
@@ -53,14 +55,16 @@ fun main() {
         println("2 - Основы")
         println("3 - Бортики")
         println("4 - Пиццы")
+        println("5 - Заказы")
 
-        val output = readIndex("Выберите номер (0...4)", 5)
+        val output = readIndex("Выберите номер (0...5)", 6)
         when (output) {
             0 -> break
             1 -> ingredientsMenu(storage)
             2 -> basesMenu(storage)
             3 -> bordersMenu(storage)
             4 -> pizzaMenu(storage)
+            5 -> ordersMenu(storage)
         }
     }
 }
