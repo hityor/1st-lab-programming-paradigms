@@ -10,7 +10,7 @@ abstract class CatalogItem(
         private set
 
     fun changeName(newName: String) {
-        require(name.isNotBlank()) { "Название не может быть пустым" }
+        require(newName.isNotBlank()) { "Название не может быть пустым" }
         name = newName.trim()
     }
 

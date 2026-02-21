@@ -1,6 +1,7 @@
 package domain
 
 import java.util.UUID
+import kotlin.math.roundToInt
 
 class OrderItem(
     val pizzaId: UUID,
@@ -11,7 +12,7 @@ class OrderItem(
     fun calcPrice(storage: DataStorage): Int {
         val pizza = storage.pizzas.find { it.id == pizzaId } ?: error("Пицца не найдена")
 
-        var price = pizza.calcPrice(storage.ingredients, storage.bases)
+        var price = pizza.calcPrice(storage)
 
         if (doubleIngredients) {
             val extra = pizza.ingredientsIds.sumOf { id ->
@@ -30,6 +31,6 @@ class OrderItem(
             price += border.calcPrice(storage.ingredients)
         }
 
-        return (price * pizzaSize.multiplier).toInt()
+        return (price * pizzaSize.multiplier).roundToInt()
     }
 }

@@ -5,31 +5,29 @@ import domain.DataStorage
 import domain.Pizza
 import utils.*
 
-fun printBases(bases: List<Base>) {
-    bases.forEach { base ->
-        println("Название: ${base.name}, цена: ${base.price}, классическая: ${base.isClassic}")
-    }
+fun printBases(storage: DataStorage) {
+    printItems(storage, storage.bases)
 }
 
-fun chooseBase(bases: MutableList<Base>): Base {
-    bases.forEachIndexed { index, base ->
+fun chooseBase(storage: DataStorage): Base {
+    storage.bases.forEachIndexed { index, base ->
         println("$index - Название: ${base.name}, цена: ${base.price}, классическая: ${base.isClassic}")
     }
 
-    val idx = readIndex("Введите номер элемента", bases.size)
-    return bases[idx]
+    val idx = readIndex("Введите номер элемента", storage.bases.size)
+    return storage.bases[idx]
 }
 
-fun addBase(bases: MutableList<Base>) {
+fun addBase(storage: DataStorage) {
     val baseName = readNonBlank("Введите название основы")
 
     val basePrice = readPositiveInt("Введите цену")
 
-    val classicBasePrice = bases.find { it.isClassic }?.price
+    val classicBasePrice = storage.bases.find { it.isClassic }?.price
     if (classicBasePrice != null) {
         if (basePrice <= classicBasePrice * 1.2) {
             println("Классическая основа уже есть, будет создана неклассическая основа")
-            bases.add(Base(name = baseName, price = basePrice, isClassic = false))
+            storage.bases.add(Base(name = baseName, price = basePrice, isClassic = false))
         } else {
             println("Цена более чем на 20 процентов больше, чем цена классической основы - так нельзя")
         }
@@ -37,16 +35,16 @@ fun addBase(bases: MutableList<Base>) {
         println("Вы хотите, чтобы эта основа была классической. Если нет, то создать основу нельзя будет")
 
         if (readIndex("0 - хотите, 1 - не хотите", 2) == 0) {
-            bases.add(Base(name = baseName, price = basePrice, isClassic = true))
+            storage.bases.add(Base(name = baseName, price = basePrice, isClassic = true))
         } else {
             println("Неклассическую основу нельзя создать, не создав классическую")
         }
     }
 }
 
-fun editBase(bases: MutableList<Base>) {
-    val base = chooseBase(bases)
-    val classicBasePrice = bases.find { it.isClassic }?.price
+fun editBase(storage: DataStorage) {
+    val base = chooseBase(storage)
+    val classicBasePrice = storage.bases.find { it.isClassic }?.price
 
     if (classicBasePrice == null) {
         println("Классической основы нет => ничего изменять тоже нельзя, на самом деле и основ нет")
@@ -68,14 +66,14 @@ fun editBase(bases: MutableList<Base>) {
     }
 }
 
-fun deleteBase(bases: MutableList<Base>, pizzas: List<Pizza>) {
-    val baseToDelete = chooseBase(bases)
-    if (pizzas.any { it.baseId == baseToDelete.id }) {
+fun deleteBase(storage: DataStorage) {
+    val baseToDelete = chooseBase(storage)
+    if (storage.pizzas.any { it.baseId == baseToDelete.id }) {
         println("Нельзя удалить основу, которая используется в какой то пицце")
         return
     }
-    if (baseToDelete.isClassic && bases.any { !it.isClassic }) println("Удалять классическую основу нельзя, если уже есть неклассическая")
-    else bases.removeIf { it.id == baseToDelete.id }
+    if (baseToDelete.isClassic && storage.bases.any { !it.isClassic }) println("Удалять классическую основу нельзя, если уже есть неклассическая")
+    else storage.bases.removeIf { it.id == baseToDelete.id }
 }
 
 fun basesMenu(dataStorage: DataStorage) {
@@ -90,10 +88,10 @@ fun basesMenu(dataStorage: DataStorage) {
 
         when (userOutput) {
             0 -> break
-            1 -> printBases(dataStorage.bases)
-            2 -> addBase(dataStorage.bases)
-            3 -> editBase(dataStorage.bases)
-            4 -> deleteBase(dataStorage.bases, dataStorage.pizzas)
+            1 -> printBases(dataStorage)
+            2 -> addBase(dataStorage)
+            3 -> editBase(dataStorage)
+            4 -> deleteBase(dataStorage)
         }
 
         line()

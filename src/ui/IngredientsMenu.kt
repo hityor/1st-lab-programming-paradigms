@@ -9,32 +9,30 @@ import utils.*
 import java.util.*
 
 
-fun chooseIngredient(ingredients: List<Ingredient>): UUID {
-    ingredients.forEachIndexed { index, ingredient ->
+fun chooseIngredient(storage: DataStorage): UUID {
+    storage.ingredients.forEachIndexed { index, ingredient ->
         println("$index - Название: ${ingredient.name}, цена - ${ingredient.price}")
     }
 
-    val idx = readIndex("Выберите номер элемента", ingredients.size)
-    return ingredients[idx].id
+    val idx = readIndex("Выберите номер элемента", storage.ingredients.size)
+    return storage.ingredients[idx].id
 }
 
-fun addIngredient(ingredients: MutableList<Ingredient>) {
+fun addIngredient(storage: DataStorage) {
     val name = readNonBlank("Введите название ингредиента")
 
     val price = readPositiveInt("Введите цену ингредиента")
 
-    ingredients.add(Ingredient(name, price))
+    storage.ingredients.add(Ingredient(name, price))
 }
 
-fun printIngredients(ingredients: List<Ingredient>) {
-    ingredients.forEach { ingredient ->
-        println("Название ${ingredient.name}, цена - ${ingredient.price}")
-    }
+fun printIngredients(storage: DataStorage) {
+    printItems(storage, storage.ingredients)
 }
 
-fun editIngredient(ingredients: List<Ingredient>) {
-    val idIngredient = chooseIngredient(ingredients)
-    val ingredient = ingredients.find { it.id == idIngredient }
+fun editIngredient(storage: DataStorage) {
+    val idIngredient = chooseIngredient(storage)
+    val ingredient = storage.ingredients.find { it.id == idIngredient }
 
     val newName = readOptionalNonBlank("Введите новое название (enter = не менять)")
     if (newName != null) ingredient?.changeName(newName)
@@ -43,10 +41,10 @@ fun editIngredient(ingredients: List<Ingredient>) {
     if (newPrice != null) ingredient?.changePrice(newPrice)
 }
 
-fun deleteIngredient(ingredients: MutableList<Ingredient>, pizzas: List<Pizza>) {
-    val idIngredient = chooseIngredient(ingredients)
+fun deleteIngredient(storage: DataStorage) {
+    val idIngredient = chooseIngredient(storage)
     var used = false
-    pizzas.forEach { pizza ->
+    storage.pizzas.forEach { pizza ->
         if (pizza.ingredientsIds.any { it == idIngredient }) {
             used = true
         }
@@ -55,7 +53,7 @@ fun deleteIngredient(ingredients: MutableList<Ingredient>, pizzas: List<Pizza>) 
         println("Нельзя удалить ингридиент, который используется в какой то пицце")
         return
     }
-    ingredients.removeIf { it.id == idIngredient }
+    storage.ingredients.removeIf { it.id == idIngredient }
 }
 
 fun ingredientsMenu(dataStorage: DataStorage) {
@@ -70,10 +68,10 @@ fun ingredientsMenu(dataStorage: DataStorage) {
 
         when (userOutput) {
             0 -> break
-            1 -> addIngredient(dataStorage.ingredients)
-            2 -> printIngredients(dataStorage.ingredients)
-            3 -> editIngredient(dataStorage.ingredients)
-            4 -> deleteIngredient(dataStorage.ingredients, dataStorage.pizzas)
+            1 -> addIngredient(dataStorage)
+            2 -> printIngredients(dataStorage)
+            3 -> editIngredient(dataStorage)
+            4 -> deleteIngredient(dataStorage)
         }
 
         line()

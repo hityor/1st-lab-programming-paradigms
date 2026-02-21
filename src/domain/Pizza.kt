@@ -20,13 +20,13 @@ class Pizza(
         baseId = newId
     }
 
-    fun calcPrice(ingredients: List<Ingredient>, bases: List<Base>): Int {
+    fun calcPrice(storage: DataStorage): Int {
         var price = 0;
 
-        price += bases.find { it.id == baseId }?.price ?: error("Основа не найдена для пиццы $name")
+        price += storage.bases.find { it.id == baseId }?.price ?: error("Основа не найдена для пиццы $name")
 
         ingredientsIds.forEach { ingredientId ->
-            price += ingredients.find { it.id == ingredientId }?.price ?: error("Ингредиент не найден для пиццы $name")
+            price += storage.ingredients.find { it.id == ingredientId }?.price ?: error("Ингредиент не найден для пиццы $name")
         }
         return price
     }
@@ -41,7 +41,7 @@ class Pizza(
             val ingredient = storage.ingredients.find { it.id == ingredientId }
             println(ingredient?.name ?: "Не найден")
         }
-        println("Общая цена: ${calcPrice(storage.ingredients, storage.bases)}")
+        println("Общая цена: ${calcPrice(storage)}")
     }
 
     fun setIngredients(newIngredientIds: List<UUID>) {

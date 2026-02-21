@@ -10,24 +10,24 @@ import utils.readNonBlank
 import utils.readOptionalNonBlank
 import java.util.*
 
-fun chooseIngredients(ingredients: List<Ingredient>): List<UUID> {
+fun chooseIngredients(storage: DataStorage): List<UUID> {
     val chosen = mutableListOf<UUID>()
 
     while (true) {
-        println("Выберите ингредиент: 0...${ingredients.size - 1}, или -1 чтобы закончить")
-        ingredients.forEachIndexed { index, ingredient ->
+        println("Выберите ингредиент: 0...${storage.ingredients.size - 1}, или -1 чтобы закончить")
+        storage.ingredients.forEachIndexed { index, ingredient ->
             println("$index - ${ingredient.name}, цена: ${ingredient.price}")
         }
 
         val n = readInt("Номер:")
         if (n == -1) break
 
-        if (n !in 0..<ingredients.size) {
+        if (n !in 0..<storage.ingredients.size) {
             println("Неверный номер")
             continue
         }
 
-        val id = ingredients[n].id
+        val id = storage.ingredients[n].id
         if (id in chosen) {
             println("Этот ингредиент уже выбран")
         } else {
@@ -39,9 +39,7 @@ fun chooseIngredients(ingredients: List<Ingredient>): List<UUID> {
 }
 
 fun printPizzas(storage: DataStorage) {
-    storage.pizzas.forEach { pizza ->
-        pizza.printInfo(storage)
-    }
+    printItems(storage, storage.pizzas)
 }
 
 fun addPizza(storage: DataStorage) {
@@ -58,7 +56,7 @@ fun addPizza(storage: DataStorage) {
     val pizzaIdx = readIndex("Выберите номер основы", storage.bases.size)
     val pizzaBaseId = storage.bases[pizzaIdx].id
 
-    val newPizza = Pizza(pizzaName, pizzaBaseId, chooseIngredients(storage.ingredients))
+    val newPizza = Pizza(pizzaName, pizzaBaseId, chooseIngredients(storage))
 
     storage.pizzas.add(newPizza)
 }
@@ -102,7 +100,7 @@ fun editPizza(storage: DataStorage) {
     }
     val changeIngredients = readIndex("0 - не менять ингредиенты, 1 - пересобрать ингредиенты", 2)
     if (changeIngredients == 1) {
-        val newIngredientsIds = chooseIngredients(storage.ingredients)
+        val newIngredientsIds = chooseIngredients(storage)
         pizza.setIngredients(newIngredientsIds)
     }
 }
