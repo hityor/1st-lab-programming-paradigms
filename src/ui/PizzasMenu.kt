@@ -38,83 +38,83 @@ fun chooseIngredients(ingredients: List<Ingredient>): List<UUID> {
     return chosen
 }
 
-fun printPizzas(pizzas: List<Pizza>, ingredients: List<Ingredient>, bases: List<Base>) {
-    pizzas.forEach { pizza ->
-        pizza.printInfo(ingredients, bases)
+fun printPizzas(storage: DataStorage) {
+    storage.pizzas.forEach { pizza ->
+        pizza.printInfo(storage)
     }
 }
 
-fun addPizza(pizzas: MutableList<Pizza>, ingredients: List<Ingredient>, bases: List<Base>) {
-    if (bases.isEmpty()) {
+fun addPizza(storage: DataStorage) {
+    if (storage.bases.isEmpty()) {
         println("Основ нет, пиццу создать нельзя")
         return
     }
 
     val pizzaName = readNonBlank("Введите название пиццы")
 
-    bases.forEachIndexed { index, base ->
+    storage.bases.forEachIndexed { index, base ->
         println("$index - ${base.name}")
     }
-    val pizzaIdx = readIndex("Выберите номер основы", bases.size)
-    val pizzaBaseId = bases[pizzaIdx].id
+    val pizzaIdx = readIndex("Выберите номер основы", storage.bases.size)
+    val pizzaBaseId = storage.bases[pizzaIdx].id
 
-    val newPizza = Pizza(pizzaName, pizzaBaseId, chooseIngredients(ingredients))
+    val newPizza = Pizza(pizzaName, pizzaBaseId, chooseIngredients(storage.ingredients))
 
-    pizzas.add(newPizza)
+    storage.pizzas.add(newPizza)
 }
 
-fun deletePizza(pizzas: MutableList<Pizza>) {
-    pizzas.forEachIndexed { index, pizza ->
+fun deletePizza(storage: DataStorage) {
+    storage.pizzas.forEachIndexed { index, pizza ->
         println("$index - ${pizza.name}")
     }
 
-    val chosenPizzaIdx = readIndex("Выберитие номер пиццы которую хотите удалить", pizzas.size)
-    val chosenPizzaId = pizzas[chosenPizzaIdx].id
+    val chosenPizzaIdx = readIndex("Выберитие номер пиццы которую хотите удалить", storage.pizzas.size)
+    val chosenPizzaId = storage.pizzas[chosenPizzaIdx].id
 
-    pizzas.removeIf { it.id == chosenPizzaId }
+    storage.pizzas.removeIf { it.id == chosenPizzaId }
 }
 
-fun editPizza(pizzas: MutableList<Pizza>, ingredients: List<Ingredient>, bases: List<Base>) {
-    pizzas.forEachIndexed { index, pizza ->
+fun editPizza(storage: DataStorage) {
+    storage.pizzas.forEachIndexed { index, pizza ->
         println("$index - ${pizza.name}")
     }
 
-    val pizzaIdx = readIndex("Введите номер пиццы которую хотите изменить", pizzas.size)
-    val pizza = pizzas[pizzaIdx]
+    val pizzaIdx = readIndex("Введите номер пиццы которую хотите изменить", storage.pizzas.size)
+    val pizza = storage.pizzas[pizzaIdx]
 
     println("${pizza.name} - название пиццы")
     val newName = readOptionalNonBlank("Введите новое название пиццы (enter = не менять название)")
     if (newName != null) pizza.changeName(newName)
 
-    println("${bases.find { it.id == pizza.baseId }?.name} - основа пиццы")
+    println("${storage.bases.find { it.id == pizza.baseId }?.name} - основа пиццы")
     val changeBase = readIndex("0 - не меняем основу, 1 - меняем основу", 2)
     if (changeBase == 1) {
-        bases.forEachIndexed { index, base ->
+        storage.bases.forEachIndexed { index, base ->
             println("$index - ${base.name}")
         }
-        val newBaseId = bases[readIndex("Выберите номер новой основы", bases.size)].id
+        val newBaseId = storage.bases[readIndex("Выберите номер новой основы", storage.bases.size)].id
         pizza.changeBaseId(newBaseId)
     }
 
     println("Текущий список ингридиентов")
     pizza.ingredientsIds.forEachIndexed { index, ingredientId ->
-        println("$index - ${ingredients.find { it.id == ingredientId }?.name}")
+        println("$index - ${storage.ingredients.find { it.id == ingredientId }?.name}")
     }
     val changeIngredients = readIndex("0 - не менять ингредиенты, 1 - пересобрать ингредиенты", 2)
     if (changeIngredients == 1) {
-        val newIngredientsIds = chooseIngredients(ingredients)
+        val newIngredientsIds = chooseIngredients(storage.ingredients)
         pizza.setIngredients(newIngredientsIds)
     }
 }
 
-fun filterPizzasByIngredient(pizzas: List<Pizza>, ingredients: List<Ingredient>): List<Pizza> {
-    ingredients.forEachIndexed { index, ingredient ->
+fun filterPizzasByIngredient(storage: DataStorage): List<Pizza> {
+    storage.ingredients.forEachIndexed { index, ingredient ->
         println("$index - ${ingredient.name}")
     }
-    val ingredientIdx = readIndex("Выберите номер ингридиента, по которому хотите сделать фильтрацию", ingredients.size)
-    val ingredientIdToFilterBy = ingredients[ingredientIdx].id
+    val ingredientIdx = readIndex("Выберите номер ингридиента, по которому хотите сделать фильтрацию", storage.ingredients.size)
+    val ingredientIdToFilterBy = storage.ingredients[ingredientIdx].id
 
-    val filteredPizzas = pizzas.filter { it.ingredientsIds.contains(ingredientIdToFilterBy) }
+    val filteredPizzas = storage.pizzas.filter { it.ingredientsIds.contains(ingredientIdToFilterBy) }
 
     return filteredPizzas
 }
@@ -132,14 +132,14 @@ fun pizzaMenu(dataStorage: DataStorage) {
 
         when (userChoice) {
             0 -> break
-            1 -> printPizzas(dataStorage.pizzas, dataStorage.ingredients, dataStorage.bases)
-            2 -> addPizza(dataStorage.pizzas, dataStorage.ingredients, dataStorage.bases)
-            3 -> deletePizza(dataStorage.pizzas)
-            4 -> editPizza(dataStorage.pizzas, dataStorage.ingredients, dataStorage.bases)
+            1 -> printPizzas(dataStorage)
+            2 -> addPizza(dataStorage)
+            3 -> deletePizza(dataStorage)
+            4 -> editPizza(dataStorage)
             5 -> {
-                val filteredPizzas = filterPizzasByIngredient(dataStorage.pizzas, dataStorage.ingredients)
+                val filteredPizzas = filterPizzasByIngredient(dataStorage)
                 filteredPizzas.forEach { pizza ->
-                    pizza.printInfo(dataStorage.ingredients, dataStorage.bases)
+                    pizza.printInfo(dataStorage)
                 }
             }
         }

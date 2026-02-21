@@ -6,11 +6,8 @@ class Pizza(
     name: String,
     baseId: UUID,
     ingredientsIds: List<UUID>,
-    val id: UUID = UUID.randomUUID()
-) {
-    var name: String = name
-        private set
-
+    id: UUID = UUID.randomUUID()
+) : CatalogItem(name, id) {
     var baseId: UUID = baseId
         private set
 
@@ -18,11 +15,6 @@ class Pizza(
 
     val ingredientsIds: List<UUID>
         get() = ingredientsIdsMutable.toList()
-
-    fun changeName(newName: String) {
-        require(newName.isNotBlank()) { "Название не может быть пустым" }
-        name = newName
-    }
 
     fun changeBaseId(newId: UUID) {
         baseId = newId
@@ -39,17 +31,17 @@ class Pizza(
         return price
     }
 
-    fun printInfo(ingredients: List<Ingredient>, bases: List<Base>) {
+    override fun printInfo(storage: DataStorage) {
         println("Название: $name")
 
-        println("Основа: ${bases.find { it.id == baseId }?.name}")
+        println("Основа: ${storage.bases.find { it.id == baseId }?.name}")
 
         println("Ингридиенты")
         ingredientsIds.forEach { ingredientId ->
-            val ingredient = ingredients.find { it.id == ingredientId }
+            val ingredient = storage.ingredients.find { it.id == ingredientId }
             println(ingredient?.name ?: "Не найден")
         }
-        println("Общая цена: ${calcPrice(ingredients, bases)}")
+        println("Общая цена: ${calcPrice(storage.ingredients, storage.bases)}")
     }
 
     fun setIngredients(newIngredientIds: List<UUID>) {
