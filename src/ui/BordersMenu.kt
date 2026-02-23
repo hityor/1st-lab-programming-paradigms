@@ -10,9 +10,22 @@ import utils.readNonBlank
 import utils.readOptionalNonBlank
 
 fun printBorders(storage: DataStorage) {
-    storage.borders.forEach { border ->
-        border.printInfo(storage.ingredients, storage.pizzas)
+    val sortedBorders = storage.borders.sortedBy { it.calcPrice(storage.ingredients) }
+
+    sortedBorders.forEach { border ->
+        border.printInfo(storage)
     }
+}
+
+fun chooseBorder(storage: DataStorage): Border {
+    val sortedBorders = storage.borders.sortedBy { it.calcPrice(storage.ingredients) }
+
+    sortedBorders.forEachIndexed { index, border ->
+        println("$index - Название: ${border.name}, цена: ${border.calcPrice(storage.ingredients)}")
+    }
+
+    val idx = readIndex("Введите номер элемента", sortedBorders.size)
+    return sortedBorders[idx]
 }
 
 fun chooseForbiddenPizzas(border: Border, storage: DataStorage) {
@@ -47,11 +60,7 @@ fun addBorder(storage: DataStorage) {
 }
 
 fun editBorder(storage: DataStorage) {
-    storage.borders.forEachIndexed { index, border ->
-        println("$index - ${border.name}")
-    }
-    val borderIdx = readIndex("Введите номер бортика который хотите изменить", storage.borders.size)
-    val border = storage.borders[borderIdx]
+    val border = chooseBorder(storage)
 
     println("${border.name} - название бортика")
     val newName = readOptionalNonBlank("Введите новое название бортика (enter = не менять название)")
@@ -69,14 +78,9 @@ fun editBorder(storage: DataStorage) {
 }
 
 fun deleteBorder(storage: DataStorage) {
-    storage.borders.forEachIndexed { index, border ->
-        println("$index - ${border.name}")
-    }
+    val chosenBorderToDelete = chooseBorder(storage)
 
-    val chosenPizzaIdx = readIndex("Выберитие номер бортика который хотите удалить", storage.borders.size)
-    val chosenPizzaId = storage.borders[chosenPizzaIdx].id
-
-    storage.borders.removeIf { it.id == chosenPizzaId }
+    storage.borders.removeIf { it.id == chosenBorderToDelete.id }
 }
 
 fun bordersMenu(dataStorage: DataStorage) {

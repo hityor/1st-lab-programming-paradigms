@@ -8,6 +8,18 @@ import utils.readNonBlank
 import utils.readOptionalNonBlank
 import java.util.*
 
+fun choosePizza(storage: DataStorage, prompt: String? = null): Pizza {
+    val sortedPizzas = storage.pizzas.sortedBy { it.calcPrice(storage) }
+
+    if (prompt != null) println(prompt)
+    sortedPizzas.forEachIndexed { index, pizza ->
+        println("$index - Название: ${pizza.name}, цена: ${pizza.calcPrice(storage)}")
+    }
+
+    val idx = readIndex("Введите номер элемента", sortedPizzas.size)
+    return sortedPizzas[idx]
+}
+
 fun chooseIngredients(storage: DataStorage): List<UUID> {
     val chosen = mutableListOf<UUID>()
 
@@ -37,7 +49,8 @@ fun chooseIngredients(storage: DataStorage): List<UUID> {
 }
 
 fun printPizzas(storage: DataStorage) {
-    printItems(storage, storage.pizzas)
+    val sortedPizzas = storage.pizzas.sortedBy { it.calcPrice(storage) }
+    printItems(storage, sortedPizzas)
 }
 
 fun addPizza(storage: DataStorage) {
@@ -60,32 +73,22 @@ fun addPizza(storage: DataStorage) {
 }
 
 fun deletePizza(storage: DataStorage) {
-    storage.pizzas.forEachIndexed { index, pizza ->
-        println("$index - ${pizza.name}")
-    }
-
-    val chosenPizzaIdx = readIndex("Выберите номер пиццы которую хотите удалить", storage.pizzas.size)
-    val chosenPizzaId = storage.pizzas[chosenPizzaIdx].id
+    val chosenPizza = choosePizza(storage, "Выберите пиццу, которую хотите удалить")
 
     storage.orders.forEach { order ->
         order.items.forEach { item ->
-            if (item.pizzaId == chosenPizzaId) {
+            if (item.pizzaId == chosenPizza.id) {
                 println("Нельзя удалять пиццу, которая находится в каком то заказе")
                 return
             }
         }
     }
 
-    storage.pizzas.removeIf { it.id == chosenPizzaId }
+    storage.pizzas.removeIf { it.id == chosenPizza.id }
 }
 
 fun editPizza(storage: DataStorage) {
-    storage.pizzas.forEachIndexed { index, pizza ->
-        println("$index - ${pizza.name}")
-    }
-
-    val pizzaIdx = readIndex("Введите номер пиццы которую хотите изменить", storage.pizzas.size)
-    val pizza = storage.pizzas[pizzaIdx]
+    val pizza = choosePizza(storage, "Выберите пиццу, которую хотите изменить")
 
     println("${pizza.name} - название пиццы")
     val newName = readOptionalNonBlank("Введите новое название пиццы (enter = не менять название)")

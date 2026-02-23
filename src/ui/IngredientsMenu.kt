@@ -9,13 +9,16 @@ import utils.*
 import java.util.*
 
 
-fun chooseIngredient(storage: DataStorage): UUID {
-    storage.ingredients.forEachIndexed { index, ingredient ->
+fun chooseIngredient(storage: DataStorage, prompt: String? = null): Ingredient {
+    val sortedIngredients = storage.ingredients.sortedBy { it.price }
+
+    if (prompt != null) println(prompt)
+    sortedIngredients.forEachIndexed { index, ingredient ->
         println("$index - Название: ${ingredient.name}, цена - ${ingredient.price}")
     }
 
-    val idx = readIndex("Выберите номер элемента", storage.ingredients.size)
-    return storage.ingredients[idx].id
+    val idx = readIndex("Выберите номер элемента", sortedIngredients.size)
+    return sortedIngredients[idx]
 }
 
 fun addIngredient(storage: DataStorage) {
@@ -27,26 +30,26 @@ fun addIngredient(storage: DataStorage) {
 }
 
 fun printIngredients(storage: DataStorage) {
-    printItems(storage, storage.ingredients)
+    val sortedIngredients = storage.ingredients.sortedBy { it.price }
+    printItems(storage, sortedIngredients)
 }
 
 fun editIngredient(storage: DataStorage) {
-    val idIngredient = chooseIngredient(storage)
-    val ingredient = storage.ingredients.find { it.id == idIngredient }
+    val ingredient = chooseIngredient(storage, "Выберите ингридиент, который хотите изменить")
 
     val newName = readOptionalNonBlank("Введите новое название (enter = не менять)")
-    if (newName != null) ingredient?.changeName(newName)
+    if (newName != null) ingredient.changeName(newName)
 
     val newPrice = readOptionalPositiveInt("Введите новую цену (enter = не менять)")
-    if (newPrice != null) ingredient?.changePrice(newPrice)
+    if (newPrice != null) ingredient.changePrice(newPrice)
 }
 
 fun deleteIngredient(storage: DataStorage) {
-    val idIngredient = chooseIngredient(storage)
+    val ingredientToDelete = chooseIngredient(storage, "Выберите ингридиент, который хотите удалить")
 
     var usedInPizza = false
     storage.pizzas.forEach { pizza ->
-        if (pizza.ingredientsIds.any { it == idIngredient }) {
+        if (pizza.ingredientsIds.any { it == ingredientToDelete.id }) {
             usedInPizza = true
         }
     }
@@ -57,7 +60,7 @@ fun deleteIngredient(storage: DataStorage) {
 
     var usedInBorder = false
     storage.borders.forEach { border ->
-        if (border.ingredientsIds.any { it == idIngredient }) {
+        if (border.ingredientsIds.any { it == ingredientToDelete.id }) {
             usedInBorder = true
         }
     }
@@ -66,7 +69,7 @@ fun deleteIngredient(storage: DataStorage) {
         return
     }
 
-    storage.ingredients.removeIf { it.id == idIngredient }
+    storage.ingredients.removeIf { it.id == ingredientToDelete.id }
 }
 
 fun ingredientsMenu(dataStorage: DataStorage) {

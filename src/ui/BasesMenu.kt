@@ -6,16 +6,20 @@ import domain.Pizza
 import utils.*
 
 fun printBases(storage: DataStorage) {
-    printItems(storage, storage.bases)
+    val sortedBases = storage.bases.sortedBy { it.price }
+    printItems(storage, sortedBases)
 }
 
-fun chooseBase(storage: DataStorage): Base {
-    storage.bases.forEachIndexed { index, base ->
+fun chooseBase(storage: DataStorage, prompt: String? = null): Base {
+    val sortedBases = storage.bases.sortedBy { it.price }
+
+    if (prompt != null) println(prompt)
+    sortedBases.forEachIndexed { index, base ->
         println("$index - Название: ${base.name}, цена: ${base.price}, классическая: ${base.isClassic}")
     }
 
-    val idx = readIndex("Введите номер элемента", storage.bases.size)
-    return storage.bases[idx]
+    val idx = readIndex("Введите номер элемента", sortedBases.size)
+    return sortedBases[idx]
 }
 
 fun addBase(storage: DataStorage) {
@@ -43,7 +47,7 @@ fun addBase(storage: DataStorage) {
 }
 
 fun editBase(storage: DataStorage) {
-    val base = chooseBase(storage)
+    val base = chooseBase(storage, "Выберите основу, которую хотите удалить")
     val classicBasePrice = storage.bases.find { it.isClassic }?.price
 
     if (classicBasePrice == null) {
@@ -66,7 +70,7 @@ fun editBase(storage: DataStorage) {
 }
 
 fun deleteBase(storage: DataStorage) {
-    val baseToDelete = chooseBase(storage)
+    val baseToDelete = chooseBase(storage, "Выберите основу, которую хотите удалить")
     if (storage.pizzas.any { it.baseId == baseToDelete.id }) {
         println("Нельзя удалить основу, которая используется в какой то пицце")
         return

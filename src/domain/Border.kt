@@ -5,10 +5,8 @@ import java.util.*
 class Border(
     name: String,
     ingredientsIds: List<UUID>,
-    val id: UUID = UUID.randomUUID()
-) {
-    var name: String = name
-        private set
+    id: UUID = UUID.randomUUID()
+) : CatalogItem(name, id) {
 
     private val ingredientsIdsMutable: MutableList<UUID> = ingredientsIds.toMutableList()
     val ingredientsIds: List<UUID> get() = ingredientsIdsMutable.toList()
@@ -16,31 +14,26 @@ class Border(
     private val forbiddenPizzaIdsMutable = mutableSetOf<UUID>()
     val forbiddenPizzaIds: List<UUID> get() = forbiddenPizzaIdsMutable.toList()
 
-    fun changeName(newName: String) {
-        require(newName.isNotBlank()) { "Название не может быть пустым" }
-        name = newName.trim()
-    }
-
     fun setIngredients(newIngredientsIds: List<UUID>) {
         ingredientsIdsMutable.clear()
         ingredientsIdsMutable.addAll(newIngredientsIds)
     }
 
-    fun printInfo(ingredients: List<Ingredient>, pizzas: List<Pizza>) {
+    override fun printInfo(storage: DataStorage) {
         println("Название: $name")
 
         println("Ингредиенты")
         ingredientsIds.forEach { ingredientId ->
-            val ingr = ingredients.find { it.id == ingredientId }?.name ?: error("Ингридиент бортика $name не найден")
-            println(ingr)
+            val ingredient = storage.ingredients.find { it.id == ingredientId }?.name ?: error("Ингридиент бортика $name не найден")
+            println(ingredient)
         }
 
         println("Пиццы, с которыми запрещено использовать этот бортик:")
         forbiddenPizzaIds.forEach { frbdnId ->
-            println(pizzas.find { it.id == frbdnId }?.name)
+            println(storage.pizzas.find { it.id == frbdnId }?.name)
         }
 
-        println("Цена бортика: ${calcPrice(ingredients)}")
+        println("Цена бортика: ${calcPrice(storage.ingredients)}")
     }
 
     fun calcPrice(ingredients: List<Ingredient>): Int =
