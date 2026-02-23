@@ -5,6 +5,7 @@ import domain.Order
 import domain.OrderItem
 import domain.PizzaSize
 import utils.readIndex
+import utils.readNonBlank
 import java.util.UUID
 
 fun createOrder(storage: DataStorage) {
@@ -55,6 +56,12 @@ fun createOrder(storage: DataStorage) {
         )
     }
 
+    println("Хотите оставить комментарий для заказа? (0 - нет, 1 - да)")
+    val leaveComment = readIndex("Выбор: ", 2) == 1
+    var comment = ""
+    if (leaveComment) comment = readNonBlank("Введите комментарий")
+
+    order.comment = comment
     storage.orders.add(order)
 }
 
