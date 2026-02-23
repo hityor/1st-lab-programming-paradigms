@@ -1,12 +1,14 @@
 package domain
 
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 class Order(
     val items: MutableList<OrderItem> = mutableListOf(),
     var comment: String = "",
     val createdAt: LocalDateTime = LocalDateTime.now(),
+    var scheduledFor: LocalDateTime? = null,
     val id: UUID = UUID.randomUUID()
 ) {
 
@@ -14,7 +16,7 @@ class Order(
 
     fun printInfo(storage: DataStorage) {
         println("Заказ: №$id")
-        println("Создан: $createdAt")
+        println("Создан: ${createdAt.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))}")
         println("Комментарий: $comment")
 
         items.forEachIndexed { index, item ->
