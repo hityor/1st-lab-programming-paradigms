@@ -59,7 +59,6 @@ fun editBase(storage: DataStorage) {
         return
     }
 
-    println()
     val newPrice = readOptionalPositiveInt("Введите новую цену (enter = не менять)")
     if (newPrice != null) {
         base.changePrice(newPrice, classicBasePrice)

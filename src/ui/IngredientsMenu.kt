@@ -43,16 +43,29 @@ fun editIngredient(storage: DataStorage) {
 
 fun deleteIngredient(storage: DataStorage) {
     val idIngredient = chooseIngredient(storage)
-    var used = false
+
+    var usedInPizza = false
     storage.pizzas.forEach { pizza ->
         if (pizza.ingredientsIds.any { it == idIngredient }) {
-            used = true
+            usedInPizza = true
         }
     }
-    if (used) {
+    if (usedInPizza) {
         println("Нельзя удалить ингридиент, который используется в какой то пицце")
         return
     }
+
+    var usedInBorder = false
+    storage.borders.forEach { border ->
+        if (border.ingredientsIds.any { it == idIngredient }) {
+            usedInBorder = true
+        }
+    }
+    if (usedInBorder) {
+        println("Нельзя удалить ингридиент, который используется в каком то бортике")
+        return
+    }
+
     storage.ingredients.removeIf { it.id == idIngredient }
 }
 
