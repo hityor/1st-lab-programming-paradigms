@@ -1,8 +1,6 @@
 package ui
 
-import domain.Base
 import domain.DataStorage
-import domain.Ingredient
 import domain.Pizza
 import utils.readIndex
 import utils.readInt
@@ -66,8 +64,16 @@ fun deletePizza(storage: DataStorage) {
         println("$index - ${pizza.name}")
     }
 
-    val chosenPizzaIdx = readIndex("Выберитие номер пиццы которую хотите удалить", storage.pizzas.size)
+    val chosenPizzaIdx = readIndex("Выберите номер пиццы которую хотите удалить", storage.pizzas.size)
     val chosenPizzaId = storage.pizzas[chosenPizzaIdx].id
+
+    storage.orders.forEach { order ->
+        order.items.forEach { item ->
+            if (item.pizzaId == chosenPizzaId) {
+                println("Нельзя удалять пиццу, которая находится в каком то заказе")
+            }
+        }
+    }
 
     storage.pizzas.removeIf { it.id == chosenPizzaId }
 }
