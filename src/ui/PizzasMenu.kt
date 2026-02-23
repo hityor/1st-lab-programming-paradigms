@@ -71,6 +71,7 @@ fun deletePizza(storage: DataStorage) {
         order.items.forEach { item ->
             if (item.pizzaId == chosenPizzaId) {
                 println("Нельзя удалять пиццу, которая находится в каком то заказе")
+                return
             }
         }
     }
