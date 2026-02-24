@@ -1,5 +1,11 @@
 package utils
 
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import javax.print.attribute.standard.DateTimeAtCreation
+
 fun readInt(prompt: String): Int {
     while (true) {
         println(prompt)
@@ -53,4 +59,16 @@ fun readOptionalPositiveInt(prompt: String): Int? {
         if (n > 0) return n
         println("Введите целое число > 0.")
     }
+}
+
+fun readDateTime(): LocalDateTime {
+    println("Введите дату (дд.ММ.гггг):")
+    val date = LocalDate.parse(readln(),
+        DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+
+    println("Введите время (ЧЧ:мм)")
+    val time = LocalTime.parse(readln(),
+        DateTimeFormatter.ofPattern("HH:mm"))
+
+    return LocalDateTime.of(date, time)
 }

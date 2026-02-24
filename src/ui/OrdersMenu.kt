@@ -4,6 +4,7 @@ import domain.DataStorage
 import domain.Order
 import domain.OrderItem
 import domain.PizzaSize
+import utils.readDateTime
 import utils.readIndex
 import utils.readNonBlank
 import java.util.UUID
@@ -60,8 +61,14 @@ fun createOrder(storage: DataStorage) {
     val leaveComment = readIndex("Выбор: ", 2) == 1
     var comment = ""
     if (leaveComment) comment = readNonBlank("Введите комментарий")
-
     order.comment = comment
+
+    println("Сделать заказ отложенным? (0 - нет, 1 - да)")
+    val delayed = readIndex("Выбор:", 2)
+    if (delayed == 1) {
+        order.scheduledFor = readDateTime()
+    }
+
     storage.orders.add(order)
 }
 

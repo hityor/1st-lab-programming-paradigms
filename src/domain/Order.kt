@@ -2,7 +2,7 @@ package domain
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.UUID
+import java.util.*
 
 class Order(
     val items: MutableList<OrderItem> = mutableListOf(),
@@ -16,7 +16,14 @@ class Order(
 
     fun printInfo(storage: DataStorage) {
         println("Заказ: №$id")
+
         println("Создан: ${createdAt.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))}")
+
+        val scheduledForFormatted = scheduledFor?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
+        if (scheduledFor != null)
+            println("Отложен: на ${scheduledForFormatted}")
+        else
+            println("Отложен: нет")
         println("Комментарий: $comment")
 
         items.forEachIndexed { index, item ->
