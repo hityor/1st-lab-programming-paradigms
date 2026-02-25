@@ -13,7 +13,9 @@ import utils.readIndex
 
 fun main() {
     val ingredients = mutableListOf<Ingredient>(
-        Ingredient(name = "Моцарелла", price = 115),
+        Ingredient(name = "Сыр Моцарелла", price = 115),
+        Ingredient(name = "Сыр Пармезан", price = 115),
+        Ingredient(name = "Сыр Чеддер", price = 115),
         Ingredient(name = "Нежный цыплёнок", price = 99),
         Ingredient(name = "Ветчина", price = 99),
         Ingredient(name = "Пепперони", price = 99),
@@ -23,7 +25,8 @@ fun main() {
 
     val bases = mutableListOf<Base>(
         Base(name = "классическая", price = 100, isClassic = true),
-        Base(name = "толстая", price = 110, isClassic = false)
+        Base(name = "толстая", price = 110, isClassic = false),
+        Base(name = "улучшенная классическая", price = 115, isClassic = false)
     )
 
 

@@ -2,6 +2,7 @@ package ui
 
 import domain.Base
 import domain.DataStorage
+import domain.Ingredient
 import domain.Pizza
 import utils.*
 
@@ -79,6 +80,35 @@ fun deleteBase(storage: DataStorage) {
     else storage.bases.removeIf { it.id == baseToDelete.id }
 }
 
+fun filterBases(storage: DataStorage): List<Base> {
+    println("0 - Сортировать по имени")
+    println("1 - Сортировать по диапазону цены")
+
+    val userChoice = readIndex("Выбор: ", 2)
+
+    when (userChoice) {
+        0 -> {
+            val filterName = readNonBlank("Введите название: ")
+
+            return storage.bases.filter {
+                it.name.contains(
+                    filterName,
+                    ignoreCase = true
+                )
+            }
+        }
+
+        else -> {
+            val start = readPositiveInt("Введите начальный диапазон")
+            val end = readPositiveInt("Введите конечный диапазон")
+
+            return storage.bases.filter {
+                it.price in start..end
+            }
+        }
+    }
+}
+
 fun basesMenu(dataStorage: DataStorage) {
     while (true) {
         println("0 - Выйти из меню")
@@ -86,8 +116,9 @@ fun basesMenu(dataStorage: DataStorage) {
         println("2 - Добавить основу")
         println("3 - Редактировать основу")
         println("4 - Удалить основу")
+        println("5 - Фильтрация")
 
-        val userOutput = readIndex("Выберите номер (0...4)", 5)
+        val userOutput = readIndex("Выберите номер (0...5)", 6)
 
         when (userOutput) {
             0 -> break
@@ -95,6 +126,11 @@ fun basesMenu(dataStorage: DataStorage) {
             2 -> addBase(dataStorage)
             3 -> editBase(dataStorage)
             4 -> deleteBase(dataStorage)
+            5 -> {
+                val filteredBases = filterBases(dataStorage)
+
+                filteredBases.forEach { base -> base.printInfo(dataStorage) }
+            }
         }
 
         line()

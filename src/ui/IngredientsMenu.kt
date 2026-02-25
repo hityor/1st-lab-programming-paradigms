@@ -1,12 +1,9 @@
 package ui
 
-import domain.Ingredient
-import domain.Pizza
+
 import domain.DataStorage
+import domain.Ingredient
 import utils.*
-
-
-import java.util.*
 
 
 fun chooseIngredient(storage: DataStorage, prompt: String? = null): Ingredient {
@@ -72,6 +69,36 @@ fun deleteIngredient(storage: DataStorage) {
     storage.ingredients.removeIf { it.id == ingredientToDelete.id }
 }
 
+fun filterIngredients(storage: DataStorage): List<Ingredient> {
+    println("0 - Сортировать по имени")
+    println("1 - Сортировать по диапазону цены")
+
+    val userChoice = readIndex("Выбор: ", 2)
+
+    when (userChoice) {
+        0 -> {
+            val filterName = readNonBlank("Введите название: ")
+
+            return storage.ingredients.filter {
+                it.name.contains(
+                    filterName,
+                    ignoreCase = true
+                )
+            }
+        }
+
+        else -> {
+            val start = readPositiveInt("Введите начальный диапазон")
+            val end = readPositiveInt("Введите конечный диапазон")
+
+            return storage.ingredients.filter {
+                it.price in start..end
+            }
+        }
+    }
+}
+
+
 fun ingredientsMenu(dataStorage: DataStorage) {
     while (true) {
         println("0 - Выйти из меню")
@@ -79,8 +106,9 @@ fun ingredientsMenu(dataStorage: DataStorage) {
         println("2 - Вывести список ингридиентов")
         println("3 - Редактировать ингридиент")
         println("4 - Удалить ингридиент")
+        println("5 - Фильтрация")
 
-        val userOutput = readIndex("Выберите номер (0...4)", 5)
+        val userOutput = readIndex("Выберите номер (0...5)", 6)
 
         when (userOutput) {
             0 -> break
@@ -88,6 +116,11 @@ fun ingredientsMenu(dataStorage: DataStorage) {
             2 -> printIngredients(dataStorage)
             3 -> editIngredient(dataStorage)
             4 -> deleteIngredient(dataStorage)
+            5 -> {
+                val filteredIngredients = filterIngredients(dataStorage)
+
+                filteredIngredients.forEach { ingredient -> ingredient.printInfo(dataStorage) }
+            }
         }
 
         line()
