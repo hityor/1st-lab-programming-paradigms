@@ -2,12 +2,12 @@ package ui
 
 import domain.Base
 import domain.DataStorage
-import domain.Ingredient
-import domain.Pizza
 import utils.*
 
 fun printBases(storage: DataStorage) {
-    val sortedBases = storage.bases.sortedBy { it.price }
+    val sortedBases = storage.bases.sortedWith(Comparator<Base> { a, b ->
+        a.price.compareTo(b.price)
+    })
     printItems(storage, sortedBases)
 }
 
