@@ -4,10 +4,11 @@ import domain.DataStorage
 import domain.Order
 import domain.OrderItem
 import domain.PizzaSize
-import utils.readDateTime
+import utils.readDate
+import utils.readDateAndTime
 import utils.readIndex
 import utils.readNonBlank
-import java.util.UUID
+import java.util.*
 
 fun createOrder(storage: DataStorage) {
     val order = Order()
@@ -66,10 +67,16 @@ fun createOrder(storage: DataStorage) {
     println("Сделать заказ отложенным? (0 - нет, 1 - да)")
     val delayed = readIndex("Выбор:", 2)
     if (delayed == 1) {
-        order.scheduledFor = readDateTime()
+        order.scheduledFor = readDateAndTime()
     }
 
     storage.orders.add(order)
+}
+
+fun filterOrdersByDate(storage: DataStorage): List<Order> {
+    val dateFilter = readDate()
+
+    return storage.orders.filter { it.createdAt.toLocalDate() == dateFilter }
 }
 
 fun ordersMenu(storage: DataStorage) {
@@ -77,11 +84,18 @@ fun ordersMenu(storage: DataStorage) {
         println("0 - Выйти из меню")
         println("1 - Создать заказ")
         println("2 - Вывести все заказы")
+        println("3 - Фильтр заказов по дате их создания")
 
-        when (readIndex("Введите номер (0...2)", 3)) {
+        when (readIndex("Введите номер (0...3)", 4)) {
             0 -> return
             1 -> createOrder(storage)
             2 -> storage.orders.forEach { order -> order.printInfo(storage) }
+            3 -> {
+                val filteredOrders = filterOrdersByDate(storage)
+
+                if (filteredOrders.isEmpty()) println("Заказы на эту дату не найдены")
+                else filteredOrders.forEach { order -> order.printInfo(storage) }
+            }
         }
     }
 }

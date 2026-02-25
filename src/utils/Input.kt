@@ -4,7 +4,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import javax.print.attribute.standard.DateTimeAtCreation
 
 fun readInt(prompt: String): Int {
     while (true) {
@@ -61,7 +60,7 @@ fun readOptionalPositiveInt(prompt: String): Int? {
     }
 }
 
-fun readDateTime(): LocalDateTime {
+fun readDateAndTime(): LocalDateTime {
     println("Введите дату (дд.ММ.гггг):")
     val date = LocalDate.parse(readln(),
         DateTimeFormatter.ofPattern("dd.MM.yyyy"))
@@ -71,4 +70,12 @@ fun readDateTime(): LocalDateTime {
         DateTimeFormatter.ofPattern("HH:mm"))
 
     return LocalDateTime.of(date, time)
+}
+
+fun readDate(): LocalDate {
+    println("Введите дату (дд.ММ.гггг):")
+    val date = LocalDate.parse(readln(),
+        DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+
+    return date
 }
