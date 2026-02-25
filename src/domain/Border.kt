@@ -50,4 +50,8 @@ class Border(
     }
 
     fun isAllowedFor(pizzaId: UUID): Boolean = pizzaId !in forbiddenPizzaIdsMutable
+
+    fun clearForbiddenPizzaIdsList() {
+        forbiddenPizzaIdsMutable.clear()
+    }
 }

@@ -24,6 +24,7 @@ fun chooseBorder(storage: DataStorage): Border {
 }
 
 fun chooseForbiddenPizzas(border: Border, storage: DataStorage) {
+    border.clearForbiddenPizzaIdsList()
     while (true) {
         println("Выберите пиццу которую хотите запретить для этого бортика: 0...${storage.pizzas.size - 1}, или -1 чтобы закончить")
         storage.pizzas.forEachIndexed { index, pizza ->
@@ -70,6 +71,9 @@ fun editBorder(storage: DataStorage) {
         val newIngredientsIds = chooseIngredients(storage)
         border.setIngredients(newIngredientsIds)
     }
+
+    val changeForbiddenPizzas = readIndex("0 - не менять ингредиенты, 1 - пересобрать ингредиенты", 2)
+    if (changeForbiddenPizzas == 1) chooseForbiddenPizzas(border, storage)
 }
 
 fun deleteBorder(storage: DataStorage) {
