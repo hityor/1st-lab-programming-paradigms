@@ -129,7 +129,8 @@ fun basesMenu(dataStorage: DataStorage) {
             5 -> {
                 val filteredBases = filterBases(dataStorage)
 
-                filteredBases.forEach { base -> base.printInfo(dataStorage) }
+                if (filteredBases.isEmpty()) println("Ничего не найдено")
+                else filteredBases.forEach { base -> base.printInfo(dataStorage) }
             }
         }
 

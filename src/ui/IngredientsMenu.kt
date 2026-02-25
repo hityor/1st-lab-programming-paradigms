@@ -119,7 +119,8 @@ fun ingredientsMenu(dataStorage: DataStorage) {
             5 -> {
                 val filteredIngredients = filterIngredients(dataStorage)
 
-                filteredIngredients.forEach { ingredient -> ingredient.printInfo(dataStorage) }
+                if (filteredIngredients.isEmpty()) println("Ничего не найдено")
+                else filteredIngredients.forEach { ingredient -> ingredient.printInfo(dataStorage) }
             }
         }
 

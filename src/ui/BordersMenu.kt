@@ -2,12 +2,7 @@ package ui
 
 import domain.Border
 import domain.DataStorage
-import domain.Ingredient
-import domain.Pizza
-import utils.readIndex
-import utils.readInt
-import utils.readNonBlank
-import utils.readOptionalNonBlank
+import utils.*
 
 fun printBorders(storage: DataStorage) {
     val sortedBorders = storage.borders.sortedBy { it.calcPrice(storage.ingredients) }
@@ -83,6 +78,12 @@ fun deleteBorder(storage: DataStorage) {
     storage.borders.removeIf { it.id == chosenBorderToDelete.id }
 }
 
+fun filterBordersByIngredient(storage: DataStorage): List<Border> {
+    val filterIngredient = chooseIngredient(storage)
+
+    return storage.borders.filter { it.ingredientsIds.contains(filterIngredient.id) }
+}
+
 fun bordersMenu(dataStorage: DataStorage) {
     while (true) {
         println("0 - Выйти из меню")
@@ -90,8 +91,9 @@ fun bordersMenu(dataStorage: DataStorage) {
         println("2 - Добавить бортик")
         println("3 - Редактировать бортик")
         println("4 - Удалить бортик")
+        println("5 - Фильтровать по ингридиенту")
 
-        val userOutput = readIndex("Выберите номер (0...4)", 5)
+        val userOutput = readIndex("Выберите номер (0...5)", 6)
 
         when (userOutput) {
             0 -> break
@@ -99,7 +101,15 @@ fun bordersMenu(dataStorage: DataStorage) {
             2 -> addBorder(dataStorage)
             3 -> editBorder(dataStorage)
             4 -> deleteBorder(dataStorage)
+            5 -> {
+                val filteredBorders = filterBordersByIngredient(dataStorage)
+
+                if (filteredBorders.isEmpty()) println("Ничего не найдено")
+                else filteredBorders.forEach { it.printInfo(dataStorage) }
+            }
         }
+
+        line()
     }
 
 

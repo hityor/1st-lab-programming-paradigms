@@ -4,6 +4,7 @@ import domain.DataStorage
 import domain.Order
 import domain.OrderItem
 import domain.PizzaSize
+import utils.line
 import utils.readDate
 import utils.readDateAndTime
 import utils.readIndex
@@ -93,9 +94,12 @@ fun ordersMenu(storage: DataStorage) {
             3 -> {
                 val filteredOrders = filterOrdersByDate(storage)
 
-                if (filteredOrders.isEmpty()) println("Заказы на эту дату не найдены")
+                if (filteredOrders.isEmpty()) println("Ничего не найдено")
                 else filteredOrders.forEach { order -> order.printInfo(storage) }
             }
+
         }
+
+        line()
     }
 }

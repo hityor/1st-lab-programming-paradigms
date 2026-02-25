@@ -2,6 +2,7 @@ package ui
 
 import domain.DataStorage
 import domain.Pizza
+import utils.line
 import utils.readIndex
 import utils.readInt
 import utils.readNonBlank
@@ -146,10 +147,12 @@ fun pizzaMenu(dataStorage: DataStorage) {
             4 -> editPizza(dataStorage)
             5 -> {
                 val filteredPizzas = filterPizzasByIngredient(dataStorage)
-                filteredPizzas.forEach { pizza ->
-                    pizza.printInfo(dataStorage)
-                }
+
+                if (filteredPizzas.isEmpty()) println("Ничего не найдено")
+                else filteredPizzas.forEach { pizza -> pizza.printInfo(dataStorage)}
             }
         }
+
+        line()
     }
 }
