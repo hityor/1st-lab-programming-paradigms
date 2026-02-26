@@ -40,12 +40,18 @@ fun createOrder(storage: DataStorage) {
         if (storage.borders.isNotEmpty()) {
             println("Добавить бортик? 0 - нет, 1 - да")
             if (readIndex("Выбор: ", 2) == 1) {
-                storage.borders.forEachIndexed { i, b ->
-                    println("$i - ${b.name}")
-                }
+                val allowedBorders = storage.borders.filter { it.isAllowedFor(pizza.id) }
 
-                val brdIdx = readIndex("Выберите бортик: ", storage.borders.size)
-                borderId = storage.borders[brdIdx].id
+                if (allowedBorders.isNotEmpty()) {
+                    storage.borders.forEachIndexed { i, b ->
+                        println("$i - ${b.name}")
+                    }
+
+                    val brdIdx = readIndex("Выберите бортик: ", storage.borders.size)
+                    borderId = storage.borders[brdIdx].id
+                } else {
+                    println("Для этой пиццы нет доступных бортиков")
+                }
             }
         }
 
