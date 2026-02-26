@@ -26,8 +26,8 @@ class Order(
             println("Отложен: нет")
         println("Комментарий: $comment")
 
-        items.forEachIndexed { index, item ->
-            println("Позиция $index: ${item.calcPrice(storage)} руб.")
+        items.forEach { item ->
+            item.printInfo(storage)
         }
 
         println("Общая стоимость: ${totalPrice(storage)} руб.")
