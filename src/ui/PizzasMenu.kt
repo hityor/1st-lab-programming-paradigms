@@ -76,15 +76,6 @@ fun addPizza(storage: DataStorage) {
 fun deletePizza(storage: DataStorage) {
     val chosenPizza = choosePizza(storage, "Выберите пиццу, которую хотите удалить")
 
-    storage.orders.forEach { order ->
-        order.items.forEach { item ->
-            if (item.pizzaId == chosenPizza.id) {
-                println("Нельзя удалять пиццу, которая находится в каком то заказе")
-                return
-            }
-        }
-    }
-
     storage.pizzas.removeIf { it.id == chosenPizza.id }
 }
 

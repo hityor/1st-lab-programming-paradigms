@@ -7,8 +7,8 @@ class OrderItem(
     val pizza: PizzaOrder,
     val pizzaSize: PizzaSize,
     val doubleIngredients: Boolean,
-    val borderId: UUID? = null
-) {
+    val border: BorderChoice? = null
+)  {
     fun calcPrice(storage: DataStorage): Int {
         var price = pizza.basePrice(storage)
 
@@ -50,10 +50,8 @@ class OrderItem(
             price += extra
         }
 
-        if (borderId != null) {
-            val border  = storage.borders.find { it.id == borderId }
-                ?: error("Бортик не найден")
-            price += border.calcPrice(storage.ingredients)
+        if (border != null) {
+            price += border.calcPrice(storage)
         }
 
         return (price * pizzaSize.multiplier).roundToInt()
