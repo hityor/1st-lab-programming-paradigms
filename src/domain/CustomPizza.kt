@@ -4,7 +4,7 @@ import java.util.*
 
 class CustomPizza(
     private val name: String,
-    private val baseId: UUID,
+    val baseId: UUID,
     private val ingredientsIds: List<UUID>,
 ) : PizzaOrder {
     override fun title(storage: DataStorage): String = "Кастом: $name"

@@ -1,8 +1,11 @@
 package ui
 
 import domain.Border
+import domain.CommonBorder
 import domain.DataStorage
+import domain.SplitBorder
 import utils.*
+import java.util.UUID
 
 fun chooseBorder(storage: DataStorage): Border {
     val sortedBorders = storage.borders.sortedBy { it.calcPrice(storage.ingredients) }
@@ -34,6 +37,18 @@ fun chooseForbiddenPizzas(border: Border, storage: DataStorage) {
         val pizzaIdToForbid = storage.pizzas[n].id
         if (border.isAllowedFor(pizzaIdToForbid)) border.forbidPizza(pizzaIdToForbid)
         else println("Эта пицца уже запрещена")
+    }
+}
+
+fun isBorderUsedInOrders(storage: DataStorage, borderIdToDelete: UUID): Boolean {
+    return storage.orders.any { o ->
+        o.items.any { item ->
+            when (val b = item.border) {
+                is CommonBorder -> b.borderId == borderIdToDelete
+                is SplitBorder -> b.leftBorderId == borderIdToDelete || b.rightBorderId == borderIdToDelete
+                else -> false
+            }
+        }
     }
 }
 
@@ -82,6 +97,10 @@ fun editBorder(storage: DataStorage) {
 fun deleteBorder(storage: DataStorage) {
     val chosenBorderToDelete = chooseBorder(storage)
 
+    if (isBorderUsedInOrders(storage, chosenBorderToDelete.id)) {
+        println("Нельзя удалить бортико, который используется в заказах")
+        return
+    }
     storage.borders.removeIf { it.id == chosenBorderToDelete.id }
 }
 

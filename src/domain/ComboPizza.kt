@@ -6,7 +6,7 @@ import kotlin.math.roundToInt
 class ComboPizza(
     val leftPizzaId: UUID,
     val rightPizzaId: UUID,
-    private val baseId: UUID
+    val baseId: UUID
 ) : PizzaOrder {
 
     override fun title(storage: DataStorage): String {

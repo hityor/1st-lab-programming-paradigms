@@ -1,8 +1,11 @@
 package ui
 
 import domain.Base
+import domain.ComboPizza
+import domain.CustomPizza
 import domain.DataStorage
 import utils.*
+import java.util.UUID
 
 fun chooseBase(storage: DataStorage, prompt: String? = null): Base {
     val sortedBases = storage.bases.sortedBy { it.price }
@@ -14,6 +17,19 @@ fun chooseBase(storage: DataStorage, prompt: String? = null): Base {
 
     val idx = readIndex("Введите номер элемента", sortedBases.size)
     return sortedBases[idx]
+}
+
+fun isBaseUsedInOrders(storage: DataStorage, baseIdToDelete: UUID): Boolean {
+    return storage.orders.any {o ->
+        o.items.any { item ->
+            when (val p = item.pizza) {
+                is CustomPizza -> p.baseId == baseIdToDelete
+                is ComboPizza -> p.baseId == baseIdToDelete
+                else -> false
+            }
+
+        }
+    }
 }
 
 fun printBases(storage: DataStorage) {
@@ -76,8 +92,15 @@ fun deleteBase(storage: DataStorage) {
         println("Нельзя удалить основу, которая используется в какой то пицце")
         return
     }
-    if (baseToDelete.isClassic && storage.bases.any { !it.isClassic }) println("Удалять классическую основу нельзя, если уже есть неклассическая")
-    else storage.bases.removeIf { it.id == baseToDelete.id }
+    if (isBaseUsedInOrders(storage, baseToDelete.id)) {
+        println("Нельзя удалить основу, которая есть в заказе")
+        return
+    }
+    if (baseToDelete.isClassic && storage.bases.any { !it.isClassic }) {
+        println("Удалять классическую основу нельзя, если уже есть неклассическая")
+        return
+    }
+    storage.bases.removeIf { it.id == baseToDelete.id }
 }
 
 fun filterBases(storage: DataStorage): List<Base> {
