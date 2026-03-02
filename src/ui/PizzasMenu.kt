@@ -1,5 +1,7 @@
 package ui
 
+import domain.CatalogPizza
+import domain.ComboPizza
 import domain.DataStorage
 import domain.Pizza
 import utils.line
@@ -49,6 +51,18 @@ fun chooseIngredients(storage: DataStorage): List<UUID> {
     return chosen
 }
 
+fun isPizzaUsedInOrders(storage: DataStorage, pizzaId: UUID): Boolean {
+    return storage.orders.any { o ->
+        o.items.any { item ->
+            when (val p = item.pizza) {
+                is CatalogPizza -> p.pizzaId == pizzaId
+                is ComboPizza -> p.leftPizzaId == pizzaId || p.rightPizzaId == pizzaId
+                else -> false
+            }
+        }
+    }
+}
+
 fun printPizzas(storage: DataStorage) {
     val sortedPizzas = storage.pizzas.sortedBy { it.calcPrice(storage) }
     printItems(storage, sortedPizzas)
@@ -75,6 +89,10 @@ fun addPizza(storage: DataStorage) {
 
 fun deletePizza(storage: DataStorage) {
     val chosenPizza = choosePizza(storage, "Выберите пиццу, которую хотите удалить")
+    if (isPizzaUsedInOrders(storage, chosenPizza.id)) {
+        println("Нельзя удалить пиццу, которая используется в каком то заказе")
+        return
+    }
 
     storage.pizzas.removeIf { it.id == chosenPizza.id }
 }

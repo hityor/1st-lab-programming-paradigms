@@ -4,8 +4,8 @@ import java.util.UUID
 import kotlin.math.roundToInt
 
 class ComboPizza(
-    private val leftPizzaId: UUID,
-    private val rightPizzaId: UUID,
+    val leftPizzaId: UUID,
+    val rightPizzaId: UUID,
     private val baseId: UUID
 ) : PizzaOrder {
 

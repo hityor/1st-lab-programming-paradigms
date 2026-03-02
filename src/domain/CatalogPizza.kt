@@ -3,7 +3,7 @@ package domain
 import java.util.*
 
 class CatalogPizza(
-    private val pizzaId: UUID
+    val pizzaId: UUID
 ) : PizzaOrder {
     override fun title(storage: DataStorage): String {
         val pizza = storage.pizzas.find { it.id == pizzaId }

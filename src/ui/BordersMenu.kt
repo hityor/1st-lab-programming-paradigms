@@ -72,7 +72,10 @@ fun editBorder(storage: DataStorage) {
         border.setIngredients(newIngredientsIds)
     }
 
-    val changeForbiddenPizzas = readIndex("0 - не менять ингредиенты, 1 - пересобрать ингредиенты", 2)
+    println("Список запрещенных пицц с которыми нельзя использовать этот бортик")
+    border.forbiddenPizzaIds.forEach { fbId -> println(storage.pizzas.find { it.id == fbId }?.name) }
+    val changeForbiddenPizzas =
+        readIndex("0 - не менять список запрещенных пицц, 1 - пересобрать список запрещенных пицц", 2)
     if (changeForbiddenPizzas == 1) chooseForbiddenPizzas(border, storage)
 }
 

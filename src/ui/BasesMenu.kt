@@ -48,11 +48,11 @@ fun addBase(storage: DataStorage) {
 }
 
 fun editBase(storage: DataStorage) {
-    val base = chooseBase(storage, "Выберите основу, которую хотите удалить")
+    val base = chooseBase(storage, "Выберите основу, которую хотите редактировать")
     val classicBasePrice = storage.bases.find { it.isClassic }?.price
 
     if (classicBasePrice == null) {
-        println("Классической основы нет => ничего изменять тоже нельзя, на самом деле и основ нет")
+        println("Классической основы нет => ничего изменять тоже нельзя")
         return
     }
 
