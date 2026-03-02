@@ -1,22 +1,8 @@
 package ui
 
-import domain.BorderChoice
-import domain.CatalogPizza
-import domain.ComboPizza
-import domain.CommonBorder
-import domain.CustomPizza
-import domain.DataStorage
-import domain.Order
-import domain.OrderItem
-import domain.Pizza
-import domain.PizzaSize
-import domain.SplitBorder
-import utils.line
-import utils.readDate
-import utils.readDateAndTime
-import utils.readIndex
-import utils.readNonBlank
-import java.util.UUID
+import domain.*
+import utils.*
+import java.util.*
 
 fun createOrder(storage: DataStorage) {
     val order = Order()
@@ -32,69 +18,49 @@ fun createOrder(storage: DataStorage) {
         return readIndex("Выбор", 2) == 1
     }
 
+    fun chooseBorderIdFrom(list: List<Border>, prompt: String): UUID? {
+        if (list.isEmpty()) {
+            println("Нет доступных вариантов")
+            return null
+        }
+        println(prompt)
+        list.forEachIndexed { i, b -> println("$i - ${b.name}") }
+        val idx = readIndex("Выбор", list.size)
+        return list[idx].id
+    }
+
     fun chooseBorderForCatalogPizzaOrNull(pizzaId: UUID): BorderChoice? {
-        if (storage.borders.isEmpty()) return null
         println("Добавить бортик? 0 - нет, 1 - да")
         if (readIndex("Выбор: ", 2) == 0) return null
 
         val allowedBorders = storage.borders.filter { it.isAllowedFor(pizzaId) }
-        if (allowedBorders.isEmpty()) {
-            println("Для этой пиццы нет доступных бортиков")
-            return null
-        }
-
-        allowedBorders.forEachIndexed { i, b -> println("$i - ${b.name}")}
-        val idx = readIndex("Выберите бортик: ", allowedBorders.size)
-        return CommonBorder(allowedBorders[idx].id)
+        return chooseBorderIdFrom(allowedBorders, "Выберите бортик")?.let { CommonBorder(it) }
     }
 
     fun chooseBorderForCustomOrNull(): BorderChoice? {
-        if (storage.borders.isEmpty()) return null
         println("Добавить бортик? 0 - нет, 1 - да")
         if (readIndex("Выбор: ", 2) == 0) return null
 
-        storage.borders.forEachIndexed { i, b -> println("$i - ${b.name}")}
-        val idx = readIndex("Выбор", storage.borders.size)
-        return CommonBorder(storage.borders[idx].id)
+        return chooseBorderIdFrom(storage.borders, "Выберите бортик")?.let { CommonBorder(it) }
     }
 
     fun chooseBorderForComboOrNull(leftPizzaId: UUID, rightPizzaId: UUID): BorderChoice? {
-        if (storage.borders.isEmpty()) return null
         println("Добавить бортик? 0 - нет, 1 - да")
         if (readIndex("Выбор: ", 2) == 0) return null
 
         println("Общий или раздельный бортик? 0 - общий, 1 - раздельный")
         when (readIndex("Выбор: ", 2)) {
             0 -> {
-                val allowedBorders = storage.borders.filter { it.isAllowedFor(leftPizzaId) && it.isAllowedFor(rightPizzaId) }
-                if (allowedBorders.isEmpty()) {
-                    println("Для этих половинок нет общего бортика")
-                    return null
-                }
-                allowedBorders.forEachIndexed { i, b -> println("$i - ${b.name}")}
-                val idx = readIndex("Выбор", allowedBorders.size)
-                return CommonBorder(allowedBorders[idx].id)
+                val allowedBorders =
+                    storage.borders.filter { it.isAllowedFor(leftPizzaId) && it.isAllowedFor(rightPizzaId) }
+                return chooseBorderIdFrom(allowedBorders, "Выберите бортик")?.let { CommonBorder(it) }
             }
-            else -> {
-                var leftBorderId: UUID? = null
-                val allowedBorderForLeft = storage.borders.filter {it.isAllowedFor(leftPizzaId)}
-                if (allowedBorderForLeft.isEmpty()) {
-                    println("Бортиков для левой пиццы нет")
-                } else {
-                    allowedBorderForLeft.forEachIndexed { i, b -> println("$i - ${b.name}")}
-                    val idxLeft = readIndex("Выбор", allowedBorderForLeft.size)
-                    leftBorderId = allowedBorderForLeft[idxLeft].id
-                }
 
-                var rightBorderId: UUID? = null
-                val allowedBorderForRight = storage.borders.filter {it.isAllowedFor(rightPizzaId)}
-                if (allowedBorderForRight.isEmpty()) {
-                    println("Бортиков для правой пиццы нет")
-                } else {
-                    allowedBorderForRight.forEachIndexed { i, b -> println("$i - ${b.name}")}
-                    val idxRight = readIndex("Выбор", allowedBorderForRight.size)
-                    rightBorderId = allowedBorderForRight[idxRight].id
-                }
+            else -> {
+                val allowedBorderForLeft = storage.borders.filter { it.isAllowedFor(leftPizzaId) }
+                val leftBorderId = chooseBorderIdFrom(allowedBorderForLeft, "Выберите левый бортик")
+                val allowedBorderForRight = storage.borders.filter { it.isAllowedFor(rightPizzaId) }
+                val rightBorderId = chooseBorderIdFrom(allowedBorderForRight, "Выберите правый бортик")
 
                 if (leftBorderId == null && rightBorderId == null) {
                     return null
@@ -106,7 +72,7 @@ fun createOrder(storage: DataStorage) {
 
     fun chooseCatalogPizzaId(prompt: String): UUID {
         println(prompt)
-        storage.pizzas.forEachIndexed { i, p ->  println("$i - ${p.name}")}
+        storage.pizzas.forEachIndexed { i, p -> println("$i - ${p.name}") }
         val idx = readIndex("Выберите пиццу: ", storage.pizzas.size)
         return storage.pizzas[idx].id
     }
@@ -160,6 +126,7 @@ fun createOrder(storage: DataStorage) {
                     )
                 )
             }
+
             3 -> {
                 if (storage.pizzas.size < 2) {
                     println("Для комбо нужно минимум 2 пиццы в каталоге")

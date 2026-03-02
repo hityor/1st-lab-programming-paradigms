@@ -1,14 +1,7 @@
 package app
 
-import domain.Base
-import domain.Ingredient
-import domain.Pizza
-import domain.DataStorage
-import ui.basesMenu
-import ui.bordersMenu
-import ui.ingredientsMenu
-import ui.ordersMenu
-import ui.pizzaMenu
+import domain.*
+import ui.*
 import utils.readIndex
 
 fun main() {
@@ -34,13 +27,24 @@ fun main() {
         Pizza(
             name = "Пепперони",
             baseId = bases[0].id,
-            ingredientsIds = mutableListOf(ingredients[0].id, ingredients[4].id)
+            ingredientsIds = listOf(ingredients[0].id, ingredients[4].id)
         ), Pizza(
             name = "какая та",
             baseId = bases[1].id,
-            ingredientsIds = mutableListOf(ingredients[4].id, ingredients[5].id)
+            ingredientsIds = listOf(ingredients[4].id, ingredients[5].id)
         ), Pizza(
-            name = "еще какая та", baseId = bases[0].id, ingredientsIds = mutableListOf(ingredients[5].id)
+            name = "еще какая та", baseId = bases[0].id, ingredientsIds = listOf(ingredients[5].id)
+        )
+    )
+
+    val borders = mutableListOf<Border>(
+        Border(
+            name = "Сырный",
+            ingredientsIds = listOf(ingredients[0].id, ingredients[1].id),
+        ),
+        Border(
+            name = "С огурчиками",
+            ingredientsIds = mutableListOf(ingredients[7].id),
         )
     )
 
@@ -48,7 +52,7 @@ fun main() {
         ingredients = ingredients,
         bases = bases,
         pizzas = pizzas,
-        borders = mutableListOf(),
+        borders = borders,
         orders = mutableListOf()
     )
 
