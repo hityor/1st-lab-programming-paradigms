@@ -10,11 +10,11 @@ class Order(
     val createdAt: LocalDateTime = LocalDateTime.now(),
     var scheduledFor: LocalDateTime? = null,
     val id: UUID = UUID.randomUUID()
-) : Printable {
+) {
 
     fun totalPrice(storage: DataStorage): Int = items.sumOf { it.calcPrice(storage) }
 
-    override fun printInfo(storage: DataStorage) {
+    fun printInfo(storage: DataStorage) {
         println("Заказ: №$id")
 
         println("Создан: ${createdAt.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))}")
