@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter
 
 fun readInt(prompt: String): Int {
     while (true) {
-        println(prompt)
+        print(prompt)
         val n = readln().toIntOrNull()
         if (n != null) return n
         println("Введите целое число.")
@@ -25,7 +25,7 @@ fun readIndex(prompt: String, size: Int): Int {
 
 fun readNonBlank(prompt: String): String {
     while (true) {
-        println(prompt)
+        print(prompt)
         val s = readln()
         if (s.isNotBlank()) return s.trim()
         println("Пустое значение. Попробуйте ещё раз.")
@@ -34,7 +34,7 @@ fun readNonBlank(prompt: String): String {
 
 fun readOptionalNonBlank(prompt: String): String? {
     while (true) {
-        println(prompt)
+        print(prompt)
         val s = readln()
         if (s.isEmpty()) return null
         if (s.isNotBlank()) return s.trim()
@@ -44,7 +44,7 @@ fun readOptionalNonBlank(prompt: String): String? {
 
 fun readPositiveInt(prompt: String): Int {
     while (true) {
-        println(prompt)
+        print(prompt)
         val n = readln().toIntOrNull()
         if (n != null && n > 0) return n
         println("Введите целое число > 0.")
@@ -53,7 +53,7 @@ fun readPositiveInt(prompt: String): Int {
 
 fun readOptionalPositiveInt(prompt: String): Int? {
     while (true) {
-        println(prompt)
+        print(prompt)
         val n = readln().toIntOrNull() ?: return null
         if (n > 0) return n
         println("Введите целое число > 0.")
@@ -61,11 +61,11 @@ fun readOptionalPositiveInt(prompt: String): Int? {
 }
 
 fun readDateAndTime(): LocalDateTime {
-    println("Введите дату (дд.ММ.гггг):")
+    print("Введите дату (дд.ММ.гггг):")
     val date = LocalDate.parse(readln(),
         DateTimeFormatter.ofPattern("dd.MM.yyyy"))
 
-    println("Введите время (ЧЧ:мм)")
+    print("Введите время (ЧЧ:мм):")
     val time = LocalTime.parse(readln(),
         DateTimeFormatter.ofPattern("HH:mm"))
 
@@ -73,7 +73,7 @@ fun readDateAndTime(): LocalDateTime {
 }
 
 fun readDate(): LocalDate {
-    println("Введите дату (дд.ММ.гггг):")
+    print("Введите дату (дд.ММ.гггг):")
     val date = LocalDate.parse(readln(),
         DateTimeFormatter.ofPattern("dd.MM.yyyy"))
 

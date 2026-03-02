@@ -15,7 +15,7 @@ fun chooseBase(storage: DataStorage, prompt: String? = null): Base {
         println("$index - Название: ${base.name}, цена: ${base.price}, классическая: ${base.isClassic}")
     }
 
-    val idx = readIndex("Введите номер элемента", sortedBases.size)
+    val idx = readIndex("Введите номер элемента: ", sortedBases.size)
     return sortedBases[idx]
 }
 
@@ -40,9 +40,9 @@ fun printBases(storage: DataStorage) {
 }
 
 fun addBase(storage: DataStorage) {
-    val baseName = readNonBlank("Введите название основы")
+    val baseName = readNonBlank("Введите название основы: ")
 
-    val basePrice = readPositiveInt("Введите цену")
+    val basePrice = readPositiveInt("Введите цену: ")
 
     val classicBasePrice = storage.bases.find { it.isClassic }?.price
     if (classicBasePrice != null) {
@@ -55,7 +55,7 @@ fun addBase(storage: DataStorage) {
     } else {
         println("Вы хотите, чтобы эта основа была классической. Если нет, то создать основу нельзя будет")
 
-        if (readIndex("0 - хотите, 1 - не хотите", 2) == 0) {
+        if (readIndex("0 - хотите, 1 - не хотите: ", 2) == 0) {
             storage.bases.add(Base(name = baseName, price = basePrice, isClassic = true))
         } else {
             println("Неклассическую основу нельзя создать, не создав классическую")
@@ -72,7 +72,7 @@ fun editBase(storage: DataStorage) {
         return
     }
 
-    val newName = readOptionalNonBlank("Введите новое название (enter = не менять)")
+    val newName = readOptionalNonBlank("Введите новое название (enter = не менять): ")
     if (newName != null) base.changeName(newName)
 
     if (base.isClassic) {
@@ -80,7 +80,7 @@ fun editBase(storage: DataStorage) {
         return
     }
 
-    val newPrice = readOptionalPositiveInt("Введите новую цену (enter = не менять)")
+    val newPrice = readOptionalPositiveInt("Введите новую цену (enter = не менять): ")
     if (newPrice != null) {
         base.changePrice(newPrice, classicBasePrice)
     }
@@ -122,8 +122,8 @@ fun filterBases(storage: DataStorage): List<Base> {
         }
 
         else -> {
-            val start = readPositiveInt("Введите начальный диапазон")
-            val end = readPositiveInt("Введите конечный диапазон")
+            val start = readPositiveInt("Введите начальный диапазон: ")
+            val end = readPositiveInt("Введите конечный диапазон: ")
 
             return storage.bases.filter {
                 it.price in start..end
@@ -141,7 +141,7 @@ fun basesMenu(dataStorage: DataStorage) {
         println("4 - Удалить основу")
         println("5 - Фильтрация")
 
-        val userOutput = readIndex("Выберите номер (0...5)", 6)
+        val userOutput = readIndex("Выберите номер (0...5): ", 6)
 
         when (userOutput) {
             0 -> break

@@ -19,7 +19,7 @@ fun choosePizza(storage: DataStorage, prompt: String? = null): Pizza {
         println("$index - Название: ${pizza.name}, цена: ${pizza.calcPrice(storage)}")
     }
 
-    val idx = readIndex("Введите номер элемента", sortedPizzas.size)
+    val idx = readIndex("Введите номер элемента: ", sortedPizzas.size)
     return sortedPizzas[idx]
 }
 
@@ -32,7 +32,7 @@ fun chooseIngredients(storage: DataStorage): List<UUID> {
             println("$index - ${ingredient.name}, цена: ${ingredient.price}")
         }
 
-        val n = readInt("Номер:")
+        val n = readInt("Номер: ")
         if (n == -1) break
 
         if (n !in 0..<storage.ingredients.size) {
@@ -74,12 +74,12 @@ fun addPizza(storage: DataStorage) {
         return
     }
 
-    val pizzaName = readNonBlank("Введите название пиццы")
+    val pizzaName = readNonBlank("Введите название пиццы: ")
 
     storage.bases.forEachIndexed { index, base ->
         println("$index - ${base.name}")
     }
-    val pizzaIdx = readIndex("Выберите номер основы", storage.bases.size)
+    val pizzaIdx = readIndex("Выберите номер основы: ", storage.bases.size)
     val pizzaBaseId = storage.bases[pizzaIdx].id
 
     val newPizza = Pizza(pizzaName, pizzaBaseId, chooseIngredients(storage))
@@ -91,16 +91,16 @@ fun editPizza(storage: DataStorage) {
     val pizza = choosePizza(storage, "Выберите пиццу, которую хотите изменить")
 
     println("${pizza.name} - название пиццы")
-    val newName = readOptionalNonBlank("Введите новое название пиццы (enter = не менять название)")
+    val newName = readOptionalNonBlank("Введите новое название пиццы (enter = не менять название): ")
     if (newName != null) pizza.changeName(newName)
 
     println("${storage.bases.find { it.id == pizza.baseId }?.name} - основа пиццы")
-    val changeBase = readIndex("0 - не меняем основу, 1 - меняем основу", 2)
+    val changeBase = readIndex("0 - не меняем основу, 1 - меняем основу: ", 2)
     if (changeBase == 1) {
         storage.bases.forEachIndexed { index, base ->
             println("$index - ${base.name}")
         }
-        val newBaseId = storage.bases[readIndex("Выберите номер новой основы", storage.bases.size)].id
+        val newBaseId = storage.bases[readIndex("Выберите номер новой основы: ", storage.bases.size)].id
         pizza.changeBaseId(newBaseId)
     }
 
@@ -108,7 +108,7 @@ fun editPizza(storage: DataStorage) {
     pizza.ingredientsIds.forEachIndexed { index, ingredientId ->
         println("$index - ${storage.ingredients.find { it.id == ingredientId }?.name}")
     }
-    val changeIngredients = readIndex("0 - не менять ингредиенты, 1 - пересобрать ингредиенты", 2)
+    val changeIngredients = readIndex("0 - не менять ингредиенты, 1 - пересобрать ингредиенты: ", 2)
     if (changeIngredients == 1) {
         val newIngredientsIds = chooseIngredients(storage)
         pizza.setIngredients(newIngredientsIds)
@@ -129,7 +129,7 @@ fun filterPizzasByIngredient(storage: DataStorage): List<Pizza> {
     storage.ingredients.forEachIndexed { index, ingredient ->
         println("$index - ${ingredient.name}")
     }
-    val ingredientIdx = readIndex("Выберите номер ингридиента, по которому хотите сделать фильтрацию", storage.ingredients.size)
+    val ingredientIdx = readIndex("Выберите номер ингридиента, по которому хотите сделать фильтрацию: ", storage.ingredients.size)
     val ingredientIdToFilterBy = storage.ingredients[ingredientIdx].id
 
     val filteredPizzas = storage.pizzas.filter { it.ingredientsIds.contains(ingredientIdToFilterBy) }
@@ -146,7 +146,7 @@ fun pizzaMenu(dataStorage: DataStorage) {
         println("4 - Удалить пиццу")
         println("5 - Фильтр пицц по ингридиенту")
 
-        val userChoice = readIndex("Выберите номер (0...5)", 6)
+        val userChoice = readIndex("Выберите номер (0...5): ", 6)
 
         when (userChoice) {
             0 -> break

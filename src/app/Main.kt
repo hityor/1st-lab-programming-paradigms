@@ -64,7 +64,7 @@ fun main() {
         println("4 - Пиццы")
         println("5 - Заказы")
 
-        val output = readIndex("Выберите номер (0...5)", 6)
+        val output = readIndex("Выберите номер (0...5): ", 6)
         when (output) {
             0 -> break
             1 -> ingredientsMenu(storage)

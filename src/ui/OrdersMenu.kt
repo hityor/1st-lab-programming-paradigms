@@ -15,7 +15,7 @@ fun createOrder(storage: DataStorage) {
 
     fun chooseDouble(): Boolean {
         println("Удвоить ингридиенты? 0 - нет, 1 - да")
-        return readIndex("Выбор", 2) == 1
+        return readIndex("Выбор: ", 2) == 1
     }
 
     fun chooseBorderIdFrom(list: List<Border>, prompt: String): UUID? {
@@ -25,7 +25,7 @@ fun createOrder(storage: DataStorage) {
         }
         println(prompt)
         list.forEachIndexed { i, b -> println("$i - ${b.name}") }
-        val idx = readIndex("Выбор", list.size)
+        val idx = readIndex("Выбор: ", list.size)
         return list[idx].id
     }
 
@@ -110,7 +110,7 @@ fun createOrder(storage: DataStorage) {
             }
 
             2 -> {
-                val name = readNonBlank("Название кастомной пиццы:")
+                val name = readNonBlank("Название кастомной пиццы: ")
                 val baseId = chooseBaseId()
                 val ingIds = chooseIngredients(storage)
                 val size = chooseSize()
@@ -153,7 +153,7 @@ fun createOrder(storage: DataStorage) {
 
     println("Хотите оставить комментарий для заказа? 0 - нет, 1 - да")
     if (readIndex("Выбор: ", 2) == 1) {
-        order.comment = readNonBlank("Введите комментарий")
+        order.comment = readNonBlank("Введите комментарий: ")
     }
 
     println("Сделать заказ отложенным? 0 - нет, 1 - да")

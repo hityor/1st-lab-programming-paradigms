@@ -14,7 +14,7 @@ fun chooseBorder(storage: DataStorage): Border {
         println("$index - Название: ${border.name}, цена: ${border.calcPrice(storage.ingredients)}")
     }
 
-    val idx = readIndex("Введите номер элемента", sortedBorders.size)
+    val idx = readIndex("Введите номер элемента: ", sortedBorders.size)
     return sortedBorders[idx]
 }
 
@@ -26,7 +26,7 @@ fun chooseForbiddenPizzas(border: Border, storage: DataStorage) {
             println("${index} - ${pizza.name}")
         }
 
-        val n = readInt("Номер:")
+        val n = readInt("Номер: ")
         if (n == -1) break
 
         if (n !in 0..<storage.pizzas.size) {
@@ -61,7 +61,7 @@ fun printBorders(storage: DataStorage) {
 }
 
 fun addBorder(storage: DataStorage) {
-    val name = readNonBlank("Введите название бортика")
+    val name = readNonBlank("Введите название бортика: ")
     val ingredientsIds = chooseIngredients(storage)
 
     val newBorder = Border(name, ingredientsIds)
@@ -74,14 +74,14 @@ fun editBorder(storage: DataStorage) {
     val border = chooseBorder(storage)
 
     println("${border.name} - название бортика")
-    val newName = readOptionalNonBlank("Введите новое название бортика (enter = не менять название)")
+    val newName = readOptionalNonBlank("Введите новое название бортика (enter = не менять название): ")
     if (newName != null) border.changeName(newName)
 
     println("Текущий список ингридиентов")
     border.ingredientsIds.forEach { ingredientId ->
         println("${storage.ingredients.find { it.id == ingredientId }?.name}")
     }
-    val changeIngredients = readIndex("0 - не менять ингредиенты, 1 - пересобрать ингредиенты", 2)
+    val changeIngredients = readIndex("0 - не менять ингредиенты, 1 - пересобрать ингредиенты: ", 2)
     if (changeIngredients == 1) {
         val newIngredientsIds = chooseIngredients(storage)
         border.setIngredients(newIngredientsIds)
@@ -90,7 +90,7 @@ fun editBorder(storage: DataStorage) {
     println("Список запрещенных пицц с которыми нельзя использовать этот бортик")
     border.forbiddenPizzaIds.forEach { fbId -> println(storage.pizzas.find { it.id == fbId }?.name) }
     val changeForbiddenPizzas =
-        readIndex("0 - не менять список запрещенных пицц, 1 - пересобрать список запрещенных пицц", 2)
+        readIndex("0 - не менять список запрещенных пицц, 1 - пересобрать список запрещенных пицц: ", 2)
     if (changeForbiddenPizzas == 1) chooseForbiddenPizzas(border, storage)
 }
 
@@ -119,7 +119,7 @@ fun bordersMenu(dataStorage: DataStorage) {
         println("4 - Удалить бортик")
         println("5 - Фильтровать по ингридиенту")
 
-        val userOutput = readIndex("Выберите номер (0...5)", 6)
+        val userOutput = readIndex("Выберите номер (0...5): ", 6)
 
         when (userOutput) {
             0 -> break

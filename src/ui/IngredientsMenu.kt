@@ -14,14 +14,14 @@ fun chooseIngredient(storage: DataStorage, prompt: String? = null): Ingredient {
         println("$index - Название: ${ingredient.name}, цена - ${ingredient.price}")
     }
 
-    val idx = readIndex("Выберите номер элемента", sortedIngredients.size)
+    val idx = readIndex("Выберите номер элемента: ", sortedIngredients.size)
     return sortedIngredients[idx]
 }
 
 fun addIngredient(storage: DataStorage) {
-    val name = readNonBlank("Введите название ингредиента")
+    val name = readNonBlank("Введите название ингредиента: ")
 
-    val price = readPositiveInt("Введите цену ингредиента")
+    val price = readPositiveInt("Введите цену ингредиента: ")
 
     storage.ingredients.add(Ingredient(name, price))
 }
@@ -34,35 +34,23 @@ fun printIngredients(storage: DataStorage) {
 fun editIngredient(storage: DataStorage) {
     val ingredient = chooseIngredient(storage, "Выберите ингридиент, который хотите изменить")
 
-    val newName = readOptionalNonBlank("Введите новое название (enter = не менять)")
+    val newName = readOptionalNonBlank("Введите новое название (enter = не менять): ")
     if (newName != null) ingredient.changeName(newName)
 
-    val newPrice = readOptionalPositiveInt("Введите новую цену (enter = не менять)")
+    val newPrice = readOptionalPositiveInt("Введите новую цену (enter = не менять): ")
     if (newPrice != null) ingredient.changePrice(newPrice)
 }
 
 fun deleteIngredient(storage: DataStorage) {
     val ingredientToDelete = chooseIngredient(storage, "Выберите ингридиент, который хотите удалить")
 
-    var usedInPizza = false
-    storage.pizzas.forEach { pizza ->
-        if (pizza.ingredientsIds.any { it == ingredientToDelete.id }) {
-            usedInPizza = true
-        }
-    }
-    if (usedInPizza) {
-        println("Нельзя удалить ингридиент, который используется в какой то пицце")
+    if (storage.pizzas.any {ingredientToDelete.id in it.ingredientsIds}) {
+        println("Нельзя удалить ингридиент, который находится в какой то пицце")
         return
     }
 
-    var usedInBorder = false
-    storage.borders.forEach { border ->
-        if (border.ingredientsIds.any { it == ingredientToDelete.id }) {
-            usedInBorder = true
-        }
-    }
-    if (usedInBorder) {
-        println("Нельзя удалить ингридиент, который используется в каком то бортике")
+    if (storage.borders.any {ingredientToDelete.id in it.ingredientsIds}) {
+        println("Нельзя удалить ингридиент, который находится в каком то бортике")
         return
     }
 
@@ -88,8 +76,8 @@ fun filterIngredients(storage: DataStorage): List<Ingredient> {
         }
 
         else -> {
-            val start = readPositiveInt("Введите начальный диапазон")
-            val end = readPositiveInt("Введите конечный диапазон")
+            val start = readPositiveInt("Введите начальный диапазон: ")
+            val end = readPositiveInt("Введите конечный диапазон: ")
 
             return storage.ingredients.filter {
                 it.price in start..end
@@ -108,7 +96,7 @@ fun ingredientsMenu(dataStorage: DataStorage) {
         println("4 - Удалить ингридиент")
         println("5 - Фильтрация")
 
-        val userOutput = readIndex("Выберите номер (0...5)", 6)
+        val userOutput = readIndex("Выберите номер (0...5): ", 6)
 
         when (userOutput) {
             0 -> break
