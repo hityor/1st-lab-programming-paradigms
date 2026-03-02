@@ -87,16 +87,6 @@ fun addPizza(storage: DataStorage) {
     storage.pizzas.add(newPizza)
 }
 
-fun deletePizza(storage: DataStorage) {
-    val chosenPizza = choosePizza(storage, "Выберите пиццу, которую хотите удалить")
-    if (isPizzaUsedInOrders(storage, chosenPizza.id)) {
-        println("Нельзя удалить пиццу, которая используется в каком то заказе")
-        return
-    }
-
-    storage.pizzas.removeIf { it.id == chosenPizza.id }
-}
-
 fun editPizza(storage: DataStorage) {
     val pizza = choosePizza(storage, "Выберите пиццу, которую хотите изменить")
 
@@ -125,6 +115,16 @@ fun editPizza(storage: DataStorage) {
     }
 }
 
+fun deletePizza(storage: DataStorage) {
+    val chosenPizza = choosePizza(storage, "Выберите пиццу, которую хотите удалить")
+    if (isPizzaUsedInOrders(storage, chosenPizza.id)) {
+        println("Нельзя удалить пиццу, которая используется в каком то заказе")
+        return
+    }
+
+    storage.pizzas.removeIf { it.id == chosenPizza.id }
+}
+
 fun filterPizzasByIngredient(storage: DataStorage): List<Pizza> {
     storage.ingredients.forEachIndexed { index, ingredient ->
         println("$index - ${ingredient.name}")
@@ -142,8 +142,8 @@ fun pizzaMenu(dataStorage: DataStorage) {
         println("0 - Выйти из меню")
         println("1 - Вывести список пицц")
         println("2 - Создать пиццу")
-        println("3 - Удалить пиццу")
-        println("4 - Редактировать пиццу")
+        println("3 - Редактировать пиццу")
+        println("4 - Удалить пиццу")
         println("5 - Фильтр пицц по ингридиенту")
 
         val userChoice = readIndex("Выберите номер (0...5)", 6)
@@ -152,8 +152,8 @@ fun pizzaMenu(dataStorage: DataStorage) {
             0 -> break
             1 -> printPizzas(dataStorage)
             2 -> addPizza(dataStorage)
-            3 -> deletePizza(dataStorage)
-            4 -> editPizza(dataStorage)
+            3 -> editPizza(dataStorage)
+            4 -> deletePizza(dataStorage)
             5 -> {
                 val filteredPizzas = filterPizzasByIngredient(dataStorage)
 

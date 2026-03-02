@@ -4,14 +4,6 @@ import domain.Border
 import domain.DataStorage
 import utils.*
 
-fun printBorders(storage: DataStorage) {
-    val sortedBorders = storage.borders.sortedBy { it.calcPrice(storage.ingredients) }
-
-    sortedBorders.forEach { border ->
-        border.printInfo(storage)
-    }
-}
-
 fun chooseBorder(storage: DataStorage): Border {
     val sortedBorders = storage.borders.sortedBy { it.calcPrice(storage.ingredients) }
 
@@ -42,6 +34,14 @@ fun chooseForbiddenPizzas(border: Border, storage: DataStorage) {
         val pizzaIdToForbid = storage.pizzas[n].id
         if (border.isAllowedFor(pizzaIdToForbid)) border.forbidPizza(pizzaIdToForbid)
         else println("Эта пицца уже запрещена")
+    }
+}
+
+fun printBorders(storage: DataStorage) {
+    val sortedBorders = storage.borders.sortedBy { it.calcPrice(storage.ingredients) }
+
+    sortedBorders.forEach { border ->
+        border.printInfo(storage)
     }
 }
 

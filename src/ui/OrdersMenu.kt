@@ -179,14 +179,14 @@ fun filterOrdersByDate(storage: DataStorage): List<Order> {
 fun ordersMenu(storage: DataStorage) {
     while (true) {
         println("0 - Выйти из меню")
-        println("1 - Создать заказ")
-        println("2 - Вывести заказы")
+        println("1 - Вывести заказы")
+        println("2 - Создать заказ")
         println("3 - Фильтр заказов по дате")
 
         when (readIndex("Выбор: ", 4)) {
             0 -> break
-            1 -> createOrder(storage)
-            2 -> printOrders(storage)
+            1 -> printOrders(storage)
+            2 -> createOrder(storage)
             3 -> {
                 val filteredOrders = filterOrdersByDate(storage)
 

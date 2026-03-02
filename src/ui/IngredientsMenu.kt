@@ -102,8 +102,8 @@ fun filterIngredients(storage: DataStorage): List<Ingredient> {
 fun ingredientsMenu(dataStorage: DataStorage) {
     while (true) {
         println("0 - Выйти из меню")
-        println("1 - Создать ингридиент")
-        println("2 - Вывести список ингридиентов")
+        println("1 - Вывести список ингридиентов")
+        println("2 - Создать ингридиент")
         println("3 - Редактировать ингридиент")
         println("4 - Удалить ингридиент")
         println("5 - Фильтрация")
@@ -112,8 +112,8 @@ fun ingredientsMenu(dataStorage: DataStorage) {
 
         when (userOutput) {
             0 -> break
-            1 -> addIngredient(dataStorage)
-            2 -> printIngredients(dataStorage)
+            1 -> printIngredients(dataStorage)
+            2 -> addIngredient(dataStorage)
             3 -> editIngredient(dataStorage)
             4 -> deleteIngredient(dataStorage)
             5 -> {

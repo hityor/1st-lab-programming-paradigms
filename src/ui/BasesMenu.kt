@@ -4,13 +4,6 @@ import domain.Base
 import domain.DataStorage
 import utils.*
 
-fun printBases(storage: DataStorage) {
-    val sortedBases = storage.bases.sortedWith(Comparator<Base> { a, b ->
-        a.price.compareTo(b.price)
-    })
-    printItems(storage, sortedBases)
-}
-
 fun chooseBase(storage: DataStorage, prompt: String? = null): Base {
     val sortedBases = storage.bases.sortedBy { it.price }
 
@@ -21,6 +14,13 @@ fun chooseBase(storage: DataStorage, prompt: String? = null): Base {
 
     val idx = readIndex("Введите номер элемента", sortedBases.size)
     return sortedBases[idx]
+}
+
+fun printBases(storage: DataStorage) {
+    val sortedBases = storage.bases.sortedWith(Comparator<Base> { a, b ->
+        a.price.compareTo(b.price)
+    })
+    printItems(storage, sortedBases)
 }
 
 fun addBase(storage: DataStorage) {
