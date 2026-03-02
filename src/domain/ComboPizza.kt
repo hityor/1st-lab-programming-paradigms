@@ -15,6 +15,33 @@ class ComboPizza(
         return "1/2 $left + 1/2 $right"
     }
 
+    override fun printComposition(storage: DataStorage, doubleIngredients: Boolean) {
+        val base = storage.bases.find { it.id == baseId }
+            ?: error("Основа не найдена")
+
+        println("  Основа ${base.name} +${base.price} руб.")
+
+        val (leftIds, rightIds) = halfIngredients(storage)
+
+        println("  Левая половина:")
+        leftIds.forEach {id ->
+            val ingr  = storage.ingredients.find { it.id == id }
+                ?: error("Ингридиент не найден")
+
+            val suffix = if (doubleIngredients) "x2" else ""
+            println("    - ${ingr.name} +${ingr.price}$suffix руб.")
+        }
+
+        println("  Правая половина:")
+        rightIds.forEach {id ->
+            val ingr  = storage.ingredients.find { it.id == id }
+                ?: error("Ингридиент не найден")
+
+            val suffix = if (doubleIngredients) "x2" else ""
+            println("    - ${ingr.name} +${ingr.price}$suffix руб.")
+        }
+    }
+
     override fun basePrice(storage: DataStorage): Int {
         val left = storage.pizzas.find { it.id == leftPizzaId }
             ?: error("Лвевая пицца не найдена")

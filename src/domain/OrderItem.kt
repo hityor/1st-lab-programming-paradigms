@@ -58,6 +58,19 @@ class OrderItem(
     }
 
     fun printInfo(storage: DataStorage) {
-        println("${pizza.title(storage)} - ${calcPrice(storage)} руб.")
+        println("Позиция: ${pizza.title(storage)}")
+        println("  Размер: $pizzaSize (x${pizzaSize.multiplier})")
+        println("  Удовение игридиентов: ${if (doubleIngredients) "да" else "нет"}")
+
+        if (border != null) {
+            println("  Бортик: ${border.title(storage)} +${border.calcPrice(storage)} руб.")
+        } else {
+            println("  Бортик: нет")
+        }
+
+        pizza.printComposition(storage, doubleIngredients)
+
+        println("  Итого по позиции: ${calcPrice(storage)} руб.")
+        println()
     }
 }

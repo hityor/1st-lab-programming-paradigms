@@ -165,6 +165,11 @@ fun createOrder(storage: DataStorage) {
 }
 
 fun printOrders(storage: DataStorage) {
+    if (storage.orders.isEmpty()) {
+        println("Список заказов пуст")
+        return
+    }
+
     storage.orders.forEach { o ->
         o.printInfo(storage)
     }
